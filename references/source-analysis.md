@@ -10,6 +10,8 @@ For product research, prefer an available, authorized browser session that prese
 
 For a source that is blocked or login-walled, report the access limit. For a retail product, look for the official manufacturer source for the exact model/variant, and use supplied material when available; keep that fallback provenance explicit. Do not transfer another model's features or assume an unverified selected color. Ask for missing copy/assets only when the unresolved information materially blocks the ad. Never infer that a failed fetch means an attached image URL is unavailable: inspect the message for the actual URL and try downloading it to a local file. Copy workspace assets rather than modifying their originals.
 
+Assess creative asset quality separately from page access. If a readable marketplace page offers mostly baked-in copy, weak crops or no useful detail/use-context imagery, inspect the exact product's official page or media gallery too. Stop when the planned beats have suitable visual evidence; collecting more similar images or crawling the whole brand site adds little value.
+
 Keep the user's CTA URL exactly when intentional; do not automatically strip query parameters. A separate normalized URL may be useful for source lookup, but it must not silently replace a campaign/affiliate destination. Do not expose session tokens, private signed URLs, cookies, or API secrets in HTML, `brief.json`, or `dist/`.
 
 ## Lightweight brief
@@ -19,7 +21,7 @@ Record these in `<out>/brief.json` without creating a large schema or research r
 | Field | What matters |
 |-------|--------------|
 | Sources/facts | Product name, brand, category, useful claims and qualifiers, with source URL or “user supplied” |
-| Audience/story | Who should care, supported core benefit/experience, proposed hook and visual beats |
+| Audience/story | Who should care, supported promise and hook; for each beat, what viewers learn, the visual evidence, and how motion directs attention |
 | Assets | Local filename, source URL/path, type, selected purpose; note derivatives |
 | Decisions | Card or landing purpose, dimensions if specified, language, visual direction, CTA URL/label, narrative video treatment |
 | Assumptions | Unverified gaps and the chosen treatment, such as omitting volatile price |

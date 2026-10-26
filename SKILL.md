@@ -31,11 +31,11 @@ Read [question-guide.md](references/question-guide.md) before asking. Clarify on
 
 ## 3. Establish the visual story
 
-Read [design-guidelines.md](references/design-guidelines.md) and the matching [motion structure](references/examples.md): a stable **single-stage** layout with directed local changes, or a **story** with different compositions inside one coherent theme. Both can fit one embedded card. Consult [style presets](references/style-presets.md) or [page patterns](references/page-patterns.md) only when useful.
+Read [design-guidelines.md](references/design-guidelines.md) and the matching [motion structure](references/examples.md): a stable **single-stage** layout with directed local changes, or a **story** with different compositions inside one coherent theme. For a story or feature-rich card, inspect the matching runnable composition before authoring; learn its timing and attention mechanisms without inheriting its look. Both structures can fit one embedded card. Consult [style presets](references/style-presets.md) or [page patterns](references/page-patterns.md) only when useful.
 
-In the brief, record one persuasive idea, selected asset roles, palette/type/grid/image-treatment constants, and beats with entrances, readable holds, transitions and a closing action. Judge theme colors after viewing selected material together; give a short [palette rationale](references/design-guidelines.md#choose-color-from-the-material). Ask about materially different unresolved directions, otherwise decide and proceed.
+In the brief, record one persuasive idea, selected asset roles, palette/type/grid/image-treatment constants, and what each beat teaches through visual evidence and motion. Include entrances, readable holds, transitions and a closing action. Judge theme colors after viewing selected material together; give a short [palette rationale](references/design-guidelines.md#choose-color-from-the-material). Ask about materially different unresolved directions, otherwise decide and proceed.
 
-Even with a short prompt, run the [type comparison](references/design-guidelines.md#typography-and-color) before extending the sequence. Vary the information and composition while preserving the chosen visual identity. Duration follows the story, not the HTML page length. A different product should require more than a title and accent-color swap.
+Even with a short prompt, compare [type and complete composition](references/design-guidelines.md#typography-and-color) in an opener and a representative information-rich beat before extending the sequence. Resolve the strongest design weakness early. Vary the information and composition while preserving the chosen visual identity. Duration follows the story, not the HTML page length.
 
 ## 4. Build and render
 
@@ -48,20 +48,21 @@ node <skill-root>/scripts/project.mjs init <out> --layout card
 
 Initialize once the mode is known, before writing under `<out>`; edit existing initialized projects in place. Default output is `motion-ads/<product-slug>/` unless specified. Install the scaffold's pinned dependencies in `hero-video/`, configure props and customize `src/Ad.tsx`. Replace scaffold copy/artwork and assign meaningful image roles.
 
-For a card, align the real HTML link with the [video CTA artwork](references/hero-video.md#cta-artwork-and-real-link). Keep the checker IDs `hero-video` and `cta`. Generate and inspect authored hold/transition stills before the full render; custom timing needs matching `qaFrames`. The final MP4 must tell the story independently of HTML copy.
+For a card, align the real HTML link with the [video CTA artwork](references/hero-video.md#cta-artwork-and-real-link). Keep the checker IDs `hero-video` and `cta`. Use selective stills for early design and corrections, then inspect authored holds/transitions and the loop before the full render; custom timing needs matching `qaFrames`. See the [staged workflow](references/hero-video.md#render-and-inspect). The final MP4 must tell the story independently of HTML copy.
 
 ## 5. Verify and improve
 
-Complete checks in order: source/variant/claims and exact CTA, structural `check`, encoded-media `verify`, browser playback/interaction, then [creative review](references/design-guidelines.md#self-critique-before-delivery). Use the detailed [render and inspection workflow](references/hero-video.md#render-and-inspect).
-
-Inspect the actual MP4, scene holds, transitions and loop at the intended display size. Open the absolute HTML path through the browser's [supported local-artifact preview](references/hero-video.md#open-the-local-artifact). A poster or successful navigation does not establish playback or pacing. Fix findings and recheck affected output. Keep one concise [QA report](references/hero-video.md#review-evidence) separating source, media, browser and creative evidence; mark unavailable checks honestly.
-
-## 6. Package and deliver
+Review source/variant/claims and exact CTA, then render and package. Packaging already performs structural and encoded-media checks; separate `check` or `verify` calls are useful for diagnosis, not a required duplicate chain.
 
 ```sh
+node <skill-root>/scripts/project.mjs render <out>
 node <skill-root>/scripts/project.mjs package <out>
 ```
 
-Packaging reruns media verification before replacing `dist/`; failed verification preserves an existing delivery. It does not perform browser or creative approval. Open the packaged `dist/index.html` in the browser for a final interaction/playback check and deliver the whole folder. Retain the working project for edits. Do not publish or add tracking unless requested.
+Use one final packaged-page session for playback/interaction and [creative review](references/design-guidelines.md#self-critique-before-delivery). Inspect the actual video, holds, transitions and loop at the intended size through the [supported local-artifact preview](references/hero-video.md#open-the-local-artifact). A poster or successful navigation does not establish playback or pacing. Fix findings and [repeat only affected checks](references/hero-video.md#recheck-only-what-changed). Keep one concise [QA report](references/hero-video.md#review-evidence); mark unavailable checks honestly.
 
-Report the output path, chosen story/style/mode/CTA, source assumptions, and separate verification results or blockers. Completion includes a narrative local MP4/poster and inspected browser output; identify partial results precisely. Public hosting and sharing are separate outcomes.
+## 6. Deliver
+
+Deliver the whole `dist/` folder after review and retain the working project for edits. Failed media verification preserves an existing delivery; packaging alone does not approve browser behavior or design. Do not publish or add tracking unless requested.
+
+Report the output path, chosen story/style/mode/CTA, source assumptions, and separate verification results or blockers. For a slow run, distinguish setup/user waits from authoring, rendering and QA time. Completion includes a narrative local MP4/poster and inspected browser output; identify partial results precisely. Public hosting and sharing are separate outcomes.

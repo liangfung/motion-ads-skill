@@ -56,6 +56,8 @@ When a host supports browser workers, repeat with a worker whose working directo
 
 ## Helper integration tests
 
+Also exercise a small revision, such as correcting only a closing headline or loop transition. Observe whether the agent selects affected stills, batches the fix and performs one new render/package cycle, without repeating unchanged source research or the full browser matrix. Record elapsed setup/user-wait, authoring, stills, rendering and QA time, full render count and browser-session reuse in the existing run report. Compare quality alongside runtime; fewer checks alone is not an improvement. A faster helper benchmark is not proof of faster end-to-end agent work.
+
 Run the helper suite independently of the host application's tests:
 
 ```sh

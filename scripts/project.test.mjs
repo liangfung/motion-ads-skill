@@ -38,6 +38,37 @@ function browserStub(out, source = 'exports.ensureBrowser = async options => ({p
   writeFileSync(join(module, "index.cjs"), source);
 }
 
+function stillStub(out, failFrame = -1) {
+  const cliModule = join(out, "hero-video/node_modules/@remotion/cli");
+  mkdirSync(cliModule, { recursive: true });
+  writeFileSync(join(cliModule, "package.json"), JSON.stringify({ name: "@remotion/cli", bin: "bin.cjs" }));
+  writeFileSync(join(cliModule, "bin.cjs"), 'throw new Error("Expected the shared still renderer");');
+  browserStub(out, `
+    const fs = require('node:fs');
+    const event = name => fs.appendFileSync('events.jsonl', JSON.stringify(name) + '\\n');
+    const browser = {close: async () => event('close')};
+    exports.ensureBrowser = async options => ({path: options.browserExecutable || process.execPath});
+    exports.openBrowser = async () => {event('open'); return browser;};
+    exports.selectComposition = async options => {event('select'); return {id: options.id};};
+    exports.renderStill = async options => {
+      fs.appendFileSync('frames.jsonl', JSON.stringify({frame: options.frame, sharedBrowser: options.puppeteerInstance === browser}) + '\\n');
+      if (options.frame === ${failFrame}) throw new Error('Frame render failed');
+      fs.writeFileSync(options.output, 'frame ' + options.frame);
+    };
+  `);
+  const bundler = join(out, "hero-video/node_modules/@remotion/bundler");
+  mkdirSync(bundler, { recursive: true });
+  writeFileSync(join(bundler, "package.json"), JSON.stringify({ name: "@remotion/bundler", main: "index.cjs" }));
+  writeFileSync(join(bundler, "index.cjs"), `exports.bundle = async options => {
+    const fs = require('node:fs');
+    const dir = options.outDir || require('node:path').join(process.cwd(), 'batch-bundle');
+    fs.mkdirSync(dir, {recursive: true});
+    fs.writeFileSync('bundle-directory.txt', dir);
+    fs.appendFileSync('events.jsonl', '"bundle"\\n');
+    return dir;
+  };`);
+}
+
 test("init works outside the skill directory and never overwrites an existing project", (t) => {
   const out = join(temporary(t), "a product");
   assert.equal(run("init", out).status, 0);
@@ -89,11 +120,7 @@ test("init offers two runnable portrait examples without changing the default sc
 test("stills honors authored hold and transition frames for unequal scene timing", (t) => {
   const out = join(temporary(t), "timed-ad");
   assert.equal(run("init", out).status, 0);
-  const module = join(out, "hero-video/node_modules/@remotion/cli");
-  mkdirSync(module, { recursive: true });
-  writeFileSync(join(module, "package.json"), JSON.stringify({ name: "@remotion/cli", bin: "bin.cjs" }));
-  writeFileSync(join(module, "bin.cjs"), 'require("node:fs").appendFileSync("frames.jsonl", JSON.stringify(process.argv.slice(2))+"\\n");');
-  browserStub(out);
+  stillStub(out);
   const path = join(out, "hero-video/props.json");
   const props = JSON.parse(readFileSync(path));
   props.qaFrames = [39, 47, 56, 143, 151, 169];
@@ -107,8 +134,9 @@ test("stills honors authored hold and transition frames for unequal scene timing
   assert.equal(readFileSync(join(out, "qa/browser.jpg"), "utf8"), "browser evidence");
   assert.equal(readFileSync(join(out, "qa/review.md"), "utf8"), "review notes");
   const frames = readFileSync(join(out, "hero-video/frames.jsonl"), "utf8").trim().split("\n").map(line =>
-    Number(JSON.parse(line).find(arg => arg.startsWith("--frame=")).split("=")[1]));
+    JSON.parse(line).frame);
   assert.deepEqual(frames, [0, 39, 47, 56, 143, 151, 169, 180, 359]);
+  assert.deepEqual(readFileSync(join(out, "hero-video/events.jsonl"), "utf8").trim().split("\n").map(JSON.parse), ["bundle", "open", "select", "close"]);
   writeFileSync(join(out, "qa/hero-39.jpg"), "current sample");
   writeFileSync(path, JSON.stringify({ ...props, qaFrames: [360] }));
   const invalid = run("stills", out);
@@ -120,17 +148,7 @@ test("stills honors authored hold and transition frames for unequal scene timing
 test("stills samples every narrative scene and both sides of cuts", (t) => {
   const out = join(temporary(t), "ad");
   assert.equal(run("init", out).status, 0);
-  const module = join(out, "hero-video/node_modules/@remotion/cli");
-  mkdirSync(module, { recursive: true });
-  writeFileSync(
-    join(module, "package.json"),
-    JSON.stringify({ name: "@remotion/cli", bin: "bin.cjs" }),
-  );
-  writeFileSync(
-    join(module, "bin.cjs"),
-    'require("node:fs").appendFileSync("frames.jsonl", JSON.stringify(process.argv.slice(2))+"\\n");',
-  );
-  browserStub(out);
+  stillStub(out);
   const propsPath = join(out, "hero-video/props.json");
   const props = JSON.parse(readFileSync(propsPath));
   props.durationSeconds = 12;
@@ -145,13 +163,7 @@ test("stills samples every narrative scene and both sides of cuts", (t) => {
   const frames = readFileSync(join(out, "hero-video/frames.jsonl"), "utf8")
     .trim()
     .split("\n")
-    .map((line) =>
-      Number(
-        JSON.parse(line)
-          .find((arg) => arg.startsWith("--frame="))
-          .split("=")[1],
-      ),
-    );
+    .map((line) => JSON.parse(line).frame);
   for (const [start, end] of [
     [0, 89],
     [90, 179],
@@ -167,6 +179,83 @@ test("stills samples every narrative scene and both sides of cuts", (t) => {
       `Missing readable label hold after frame ${start}`,
     );
   assert.ok(frames.includes(348) && frames.includes(354), "sample the default ad's closing dissolve as well as its endpoint");
+});
+
+test("stills selects only requested frames, reuses a browser and preserves other evidence", (t) => {
+  const out = join(temporary(t), "selective ad");
+  assert.equal(run("init", out).status, 0);
+  stillStub(out);
+  mkdirSync(join(out, "qa"));
+  writeFileSync(join(out, "qa/hero-39.jpg"), "previous hold");
+  const props = readFileSync(join(out, "hero-video/props.json"));
+  const result = run("stills", out, "--frames=56,0,56");
+  assert.equal(result.status, 0, result.stderr);
+  const frames = readFileSync(join(out, "hero-video/frames.jsonl"), "utf8").trim().split("\n").map(JSON.parse);
+  assert.deepEqual(frames.map(frame => frame.frame), [0, 56]);
+  assert.ok(frames.every(frame => frame.sharedBrowser));
+  assert.equal(existsSync(readFileSync(join(out, "hero-video/bundle-directory.txt"), "utf8")), false);
+  assert.equal(readFileSync(join(out, "qa/hero-39.jpg"), "utf8"), "previous hold");
+  assert.deepEqual(readFileSync(join(out, "hero-video/props.json")), props);
+  for (const args of [["--frames=0,360"], ["--frames=1-3"], ["--frames"]]) {
+    const invalid = run("stills", out, ...args);
+    assert.notEqual(invalid.status, 0);
+    assert.match(invalid.stderr, /--frames/);
+  }
+  assert.deepEqual(readFileSync(join(out, "hero-video/events.jsonl"), "utf8").trim().split("\n").map(JSON.parse), ["bundle", "open", "select", "close"]);
+});
+
+test("stills closes its shared browser when a frame fails", (t) => {
+  const out = join(temporary(t), "failed still");
+  assert.equal(run("init", out).status, 0);
+  stillStub(out, 39);
+  const result = run("stills", out, "--frames", "0,39");
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /Frame render failed/);
+  assert.deepEqual(readFileSync(join(out, "hero-video/events.jsonl"), "utf8").trim().split("\n").map(JSON.parse), ["bundle", "open", "select", "close"]);
+  assert.equal(existsSync(readFileSync(join(out, "hero-video/bundle-directory.txt"), "utf8")), false);
+});
+
+test("stills preserves custom config and advanced CLI flags", (t) => {
+  for (const mode of ["flags", "modified", "alternate"]) {
+    const out = join(temporary(t), "configured ad");
+    assert.equal(run("init", out).status, 0);
+    stillStub(out);
+    if (mode === "modified") {
+      const config = join(out, "hero-video/remotion.config.ts");
+      writeFileSync(config, readFileSync(config, "utf8") + '\nConfig.overrideWebpackConfig(config => config);\n');
+    }
+    if (mode === "alternate") writeFileSync(join(out, "hero-video/remotion.config.mjs"), 'export default {};');
+    writeFileSync(join(out, "hero-video/node_modules/@remotion/cli/bin.cjs"), 'require("node:fs").appendFileSync("cli-calls.jsonl", JSON.stringify(process.argv.slice(2))+"\\n");');
+    const flags = mode === "flags" ? ["--jpeg-quality=70"] : [];
+    const result = run("stills", out, "--frames=0,56", ...flags);
+    assert.equal(result.status, 0, result.stderr);
+    const calls = readFileSync(join(out, "hero-video/cli-calls.jsonl"), "utf8").trim().split("\n").map(JSON.parse);
+    assert.deepEqual(calls.map(args => args.find(arg => arg.startsWith("--frame="))), ["--frame=0", "--frame=56"]);
+    assert.ok(calls.every(args => !args.some(arg => arg.startsWith("--frames"))));
+    assert.ok(mode !== "flags" || calls.every(args => args.includes("--jpeg-quality=70")));
+    assert.equal(existsSync(join(out, "hero-video/events.jsonl")), false);
+  }
+});
+
+test("stills removes its temporary bundle when setup or browser cleanup fails", (t) => {
+  for (const phase of ["bundle", "open", "close"]) {
+    const out = join(temporary(t), "startup failure");
+    assert.equal(run("init", out).status, 0);
+    stillStub(out);
+    if (phase === "bundle") {
+      writeFileSync(join(out, "hero-video/node_modules/@remotion/bundler/index.cjs"), 'exports.bundle = async options => {require("node:fs").writeFileSync("bundle-directory.txt", options.outDir); throw new Error("Bundle failed");};');
+    } else if (phase === "open") {
+      const path = join(out, "hero-video/node_modules/@remotion/renderer/index.cjs");
+      writeFileSync(path, readFileSync(path, "utf8") + '\nexports.openBrowser = async () => {throw new Error("Browser startup failed");};');
+    } else {
+      const path = join(out, "hero-video/node_modules/@remotion/renderer/index.cjs");
+      writeFileSync(path, readFileSync(path, "utf8") + '\nexports.openBrowser = async () => ({close: async () => {throw new Error("Browser close failed");}});');
+    }
+    const result = run("stills", out, "--frames=0");
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, phase === "bundle" ? /Bundle failed/ : phase === "open" ? /Browser startup failed/ : /Browser close failed/);
+    assert.equal(existsSync(readFileSync(join(out, "hero-video/bundle-directory.txt"), "utf8")), false);
+  }
 });
 
 test("render resolves an environment browser and preserves explicit paths with spaces", (t) => {

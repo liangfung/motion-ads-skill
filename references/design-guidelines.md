@@ -38,13 +38,13 @@ Record a short rationale in the existing brief: which selected assets informed t
 
 Write a small visual contract before coding: **one organizing idea**, palette roles, display/reading type roles, margins/alignment, image treatment, recurring visual anchor, and motion character. Keep it short in the brief/chat; it is a decision aid, not a separate approval document. Category alone is not a style decision: black headphones photographed on white can support clean white editorial design; “technology” does not imply a dark neon canvas.
 
-Keep background family, typography, grid, CTA geometry and imagery treatment stable across shots. A different crop, framed feature window, scale, annotation or typographic emphasis can add information without adding a new theme. Change a theme deliberately only when the story needs that contrast. Use a dominant focal point, a supporting layer and optional atmosphere rather than three equally loud ideas.
+Keep background family, typography, grid, CTA geometry and imagery treatment coherent across shots; composition can change with the message. A different crop, framed feature window, scale, annotation or typographic emphasis can add information without adding a new theme. Change a theme deliberately only when the story needs that contrast. Use a dominant focal point, a supporting layer and optional atmosphere rather than three equally loud ideas.
 
 Review selected assets together before animating. A packshot, warm lifestyle photo and technical diagram may all be accurate but still clash; choose compatible material or give it a consistent frame/crop/grade and reading area. Do not insert a lifestyle scene merely because the image is available. Never force a dark/transparent look by blending a white-background black product into the stage. Keep its white field intentional or obtain a clean cutout.
 
 For a **single-stage** card, keep the main layout, brand/promise and action stable while directing attention through local changes: replace a photograph within its frame, cycle a coordinated product grid, draw labels towards parts, reveal a detail inset or gently move the packshot. A clean stage can contain several images, a short benefit group and a proof rail when their roles and alignment are clear. Bright color, split fields and full-bleed photography are equally valid; clean does not require a white canvas or sparse content. Let one region develop at a time, keep text still during its reading hold, and preserve useful separation between groups. See the single-stage families in [examples.md](examples.md); the object study is one option, not a universal layout.
 
-For a **story** card, each shot should develop a different argument within the same visual language. Give transitions a connection (detail-to-object, landmark-to-world, line-to-mask), prepare entrances before the reading hold, and avoid headline collisions. The runnable examples demonstrate both structures.
+For a **story** card, each shot should develop a different argument within the same visual language. Tie its visual mechanism to that argument: a world tour can reveal distinct locations, a real feature can use a focused crop/annotation, and a food promise can move from recognizable product to texture and use context. A new headline over another slow image push does not by itself develop the story. Give transitions a connection, prepare entrances before the reading hold, and avoid headline collisions. The runnable examples demonstrate both structures.
 
 Pick a product-specific organizing idea: oversized silhouette, tactile detail study, crisp UI tour, immersive scene, specimen grid, or editorial split. Change scale, crop, alignment, depth, negative space, and image/text relationship when the beat needs it. Maintain enough continuity that scene changes feel like one campaign.
 
@@ -58,8 +58,8 @@ In a landing page, use responsive type and comfortable reading measures. Typical
 
 Choose typography from the selected material, brand/genre and message; examples supply techniques, not a fixed font or weight. Use a small coherent type system with display and reading roles and appropriate glyph coverage for the output language.
 
-1. Compare 2–3 plausible treatments using the actual headline, a supporting label and CTA over selected imagery. Vary font family, available weight and intentional line breaks while keeping the surrounding composition comparable.
-2. Inspect rendered previews at the target display size (about 360px wide for cards). Check hierarchy, stroke weight, line balance, line-height, spacing and contrast, including the actual fonts/weights rendered. Shorten copy or recompose before shrinking text.
+1. Compare 2–3 plausible type treatments inside an early complete composition using actual imagery, headline, supporting label and CTA. Combine this with the opener/information-rich beat check rather than building a separate font project. Vary family, available weight and intentional line breaks; type contrast should reinforce this material and message.
+2. Inspect rendered previews at the target display size (about 360px wide for cards). Judge product prominence, crop, palette relationships and reading hierarchy together with stroke weight, line balance, line-height, spacing and the actual fonts/weights rendered. A readable font choice cannot rescue a weak image/text arrangement. Recompose or shorten copy before shrinking text.
 3. Record the chosen type roles and a short rationale in the existing brief, then apply them coherently across scenes. Recheck dense reading holds and transition frames for clipping, collisions and legibility.
 
 Animate typography to establish emphasis, then let it read. Short word/line reveals can suit a bold ad; a calm statement may only need a cut or dissolve. Avoid a long typewriter entrance for a paragraph, constantly shifting baselines, and transitions that leave overlapping headlines on screen.
@@ -86,16 +86,16 @@ Use the actual destination and preserve intentional query parameters. A missing 
 
 ## Self-critique before delivery
 
-Inspect the standalone video, then the real browser output, and answer with evidence:
+Inspect the final encoded video without supporting HTML copy during the packaged-page review, and answer with evidence:
 
-1. With HTML copy hidden, can a viewer identify the product, read the hook/benefits and understand the next action?
-2. Does each scene hold long enough at the intended size, and do transitions preserve text/subject clarity?
-3. Do composition, typography, imagery and rhythm reflect this brand or game world?
+1. With supporting HTML copy hidden, does the opening establish a recognizable subject and a compelling reason to keep watching, followed by a clear next action?
+2. Does each beat add useful information supported by its imagery, crop or annotations, with a readable hold and a transition that preserves clarity?
+3. Do product prominence, typography, palette relationships and motion reflect this brand or world? Identify any generic image-swap sequence or decoration that contributes no meaning.
 4. Are the CTA artwork and real hit region aligned, readable and usable across agreed sizes?
 5. Does the wrapper or landing page support the chosen mode, with working keyboard focus, reduced-motion handling and any chosen interactions?
 6. Are claims, poster, video and destination consistent with the source and brief?
 
-Run correctness/media/browser checks first, then fix the strongest creative defect and re-inspect affected states. Passing `check` establishes structure, not decoding, visual quality or pacing. A palette that is individually attractive can still be incoherent across a sequence; compare all scene holds together.
+Resolve the strongest creative weakness in early stills, batch related corrections, then render. After correctness/media/browser checks, confirm the final encoded video retains that design; inspect affected states after a fix. Report a readable but weak draft as needing improvement rather than approving it solely for having no collisions. A palette that is individually attractive can still be incoherent across a sequence; compare all holds together. Use the [staged QA workflow](hero-video.md#render-and-inspect) to reuse unchanged evidence.
 
 ## Clean presentation and deliberate spacing
 

@@ -1,6 +1,6 @@
 # Advertising Video (Remotion)
 
-The MP4 must carry the advertisement: recognizable brand/product, a hook, supported benefits or annotations, an intentional visual sequence and transitions, and CTA artwork. Review it independently of the HTML. A camera move over a product photo or gallery is useful raw material, but does not by itself communicate a complete ad.
+The MP4 must carry the advertisement: recognizable brand/product, a hook, supported benefits or annotations, an intentional visual sequence and transitions, and CTA artwork. Assess its message without supporting HTML copy. A camera move over a product photo or gallery is useful raw material, but does not by itself communicate a complete ad.
 
 ## Scaffold and props
 
@@ -56,36 +56,56 @@ The destination belongs to the real HTML link, preserving intentional query para
 
 ## Render and inspect
 
-1. Choose the video aspect ratio and safe subject/text area for the selected mode. Avoid stretching a square render into a portrait or wide slot. Set `props.json` and edit `src/Ad.tsx` as needed, then run:
+1. **Resolve design early.** Set the aspect ratio and author the opening plus one representative information-rich beat. Compare type, product scale, crop, palette and spacing together at the intended display size. Render only those frame indices, for example:
+
+```sh
+node <skill-root>/scripts/project.mjs stills <out> --frames=0,180
+```
+
+`--frames` accepts comma-separated integer indices at 30fps (also `--frames 0,180`), replaces automatic sampling for that invocation and leaves other QA files intact. Choose actual frames from the authored timing. Retained stills are not current evidence for changed shots.
+
+2. **Complete the story and inspect it once.** Set `qaFrames` in `props.json` for custom timing: each readable hold, representative transition states and the final-to-first wrap. Use extra boundary frames where clipping, occlusion or text overlap is a real risk. Without an authored list the helper samples first/middle/last plus default scene holds and cuts. Run local typechecking after source edits and generate the full set:
 
 ```sh
 node <skill-root>/scripts/project.mjs stills <out>
 ```
 
-2. Inspect the images under `<out>/qa/` with an available image-viewing tool. Stills currently launch one Remotion CLI process per frame, so dense sampling has startup/bundling overhead; choose meaningful frames and allow the job to finish. Without an authored frame list, the helper samples first/middle/last plus default ad-scene holds and transitions. For custom timing set `qaFrames: [0, ...]` in `props.json` to include actual holds and each transition's start/middle/end, plus the loop wrap; frames are integer indices at 30fps. Read the **actual rendered words** in every scene. Check cropped subjects, text wraps, label overlap, and the CTA region. Frame 0 becomes the poster and must already communicate a useful ad state.
-3. Render and check:
+With the starter configuration, stills bundle once and share one render browser across the selected frames; the browser and temporary bundle are cleaned up on success or failure. Custom `remotion.config.*` files or additional Remotion CLI flags retain the CLI path and may be slower. A full stills run refreshes its own `qa/hero-<frame>.jpg` files; a selective run replaces only requested frames. Browser screenshots/reports are retained. Inspect images with an available image-viewing tool; read actual rendered words, subject crops, spacing and CTA clearance. Frame 0 becomes the poster and must communicate a useful ad state. Batch related corrections and rerun only affected frames, including any changed transition/wrap, before another full render.
+
+3. **Render and package the accepted composition.** The normal final chain is:
 
 ```sh
 node <skill-root>/scripts/project.mjs render <out>
-node <skill-root>/scripts/project.mjs check <out>
-node <skill-root>/scripts/project.mjs verify <out>
+node <skill-root>/scripts/project.mjs package <out>
 ```
 
-4. `check` validates package structure/resources and known untouched template copy. In a working project it also checks props and referenced scaffold artwork; explicitly illustrative studies remain supported. This is not a semantic completeness or source-truth check. `brief.json` records facts/provenance but is not a fixed-schema or URL-required validator. User-supplied local files are valid sources.
+`package` already runs `check` and `verify`; calling all three in sequence repeats work. Use the separate commands for intermediate diagnosis when needed. `check` validates resources and known scaffold copy/artwork, not source truth or design. `brief.json` is a lightweight provenance/decision record, not a fixed-schema or URL-required validator; user-supplied files are valid sources. `verify` probes encoded media, checks dimensions/duration/codec/silence, fully decodes the video and writes current hashes in `qa/media-check.json`.
 
-`verify` probes the **encoded** MP4/poster, checks dimensions/duration/codec/silence, fully decodes the video, and writes hashes in `qa/media-check.json`. These checks do not inspect claims or design. Finish the source/CTA review and browser playback/interaction checks before approving quality. Then watch **`<out>/hero.mp4` by itself**, without adjacent HTML copy, at roughly 360px displayed card width or the target landing slot. Inspect every text hold, theme consistency, complete story, transition, CTA, and final-to-first wrap; stills do not establish pacing. Check the final packaged folder too, and repeat affected checks after edits.
+4. **Review the final packaged page in one browser session.** Check resource loading, advancing playback and loop, CTA alignment/navigation/focus and reduced motion at the agreed viewports. Watch one normal-speed cycle at roughly 360px card width or the target landing slot, with supporting HTML copy out of view. A thin card already meets this condition: the same pass can establish video storytelling, pacing and page playback without another raw-MP4 viewing cycle. For other viewport sizes, inspect representative holds and interaction geometry rather than replaying the whole cycle each time. Capture a few useful holds/transitions and the wrap; use supported batching for independent observations instead of per-second tool calls. Extra close sampling is appropriate when diagnosing a motion fault.
+
+One concise report separates source, media, browser and creative evidence. Fix genuine findings and recheck the affected result; completing a checklist or generating a report is not creative approval.
 
 For landing pages, keep `.hero` in `index.html` at the same aspect ratio as `props.json` width/height; the starter's 5/3 matches 1200×720. The card wrapper also needs its aspect ratio and viewport-fit sizing updated when the placement changes.
 
-Outputs are **`<out>/hero.mp4` and `<out>/poster.jpg`**, already beside `index.html`. Use the helper, not a separate `npm run render`/`poster` pipeline. Each `stills` run refreshes only its own `qa/hero-<frame>.jpg` files; browser screenshots and review reports are retained and must be reassessed when affected. `stills` and `render` forward additional Remotion CLI arguments, for example:
+Outputs are **`<out>/hero.mp4` and `<out>/poster.jpg`**, already beside `index.html`. Use the helper, not a separate `npm run render`/`poster` pipeline. `stills` and `render` accept additional Remotion CLI arguments, for example:
 
 ```sh
 node <skill-root>/scripts/project.mjs render <out> --browser-executable=/path/to/chrome
 ```
 
+### Recheck only what changed
+
+| Change | Repeat |
+|---|---|
+| Composition, props or source imagery | Affected stills; typecheck after code edits; render and package. Inspect changed holds/transitions and alignment; repeat a full playback cycle when timing or sequence changed. |
+| HTML, playback behavior, CTA destination or hit region | Package and affected browser checks. Keep the existing MP4 when the composition is unchanged. |
+| Packaging of already-reviewed identical HTML/media | Packaged resource loading and a short playback smoke check. Reuse the recorded creative/interaction evidence for the identical files. |
+
+Unchanged source facts, destination activation and preference behavior need not be re-researched or retested after a video-only fix. Check CTA alignment again if the artwork moves. Reuse evidence only when its tested inputs are unchanged; record the scope honestly. Fixing the loop usually needs a few closing/opening frames, not another full stills sweep.
+
 ### Open the local artifact
 
-Open the absolute path to `<out>/index.html`, then `<out>/dist/index.html` after packaging, with the available browser tool. Use its supported local-file or built-in preview according to the host's system instructions and tool descriptions. If delegating, pass the same paths and checks to the browser worker. Keep the HTML and relative resources together. Confirm the actual MP4/poster load and playback time advances before reviewing motion.
+Open the absolute path to `<out>/dist/index.html` for final QA with the available browser tool; the working `<out>/index.html` is useful for an earlier diagnosis, not a mandatory extra full review. Use the tool's supported local-file or built-in preview according to the host's system instructions and tool descriptions. If delegating, pass the same path and checks to the browser worker. Keep HTML and relative resources together. Confirm actual MP4/poster loading and advancing time before reviewing motion.
 
 ### Browser tool capabilities
 
@@ -94,7 +114,7 @@ Use the browser tool's supported actions and inspection APIs. Native browser act
 | Capability | Required use |
 |---|---|
 | Navigate and inspect sources | Open external product/manufacturer/store URLs, wait for rendered content, scroll/click relevant galleries or variant controls, read facts and exact links, and obtain usable original asset URLs |
-| Reach the delivered page | Open working and packaged HTML through the [local-artifact preview](#open-the-local-artifact); verify JavaScript, relative resources and H.264 MP4 playback |
+| Reach the delivered page | Open final packaged HTML through the [local-artifact preview](#open-the-local-artifact), or working HTML for diagnosis; verify JavaScript, relative resources and H.264 MP4 playback |
 | Capture and resize | Set the specified mobile/desktop viewport sizes and return viewable screenshots at multiple moments for layout, spacing and motion inspection |
 | Observe runtime state | Inspect loaded video dimensions, readiness, paused/error state and time advancing naturally across observations, including loop behavior; inspect element bounds, destination URLs and focus state |
 | Exercise interaction and preferences | Perform real pointer and keyboard actions, observe CTA navigation/new tabs, and test reduced-motion preferences on initial load and after changes |
@@ -133,6 +153,8 @@ Mark each result `passed`, `failed`, `blocked` or `not run`; state partial cover
 
 After changes, recheck affected evidence and update the report. A new `media-check.json` does not refresh earlier browser/creative conclusions. If a required review is blocked, keep the partial artifact and report the blocker; packaging success alone does not mean the ad is complete.
 
+For a slow run, add a compact timing summary here: setup/user waits, research/authoring, stills, full render count/time, and browser QA. Tool-job durations and user approval delays are different measurements; avoid attributing all elapsed time to rendering or inventing missing timestamps.
+
 For clean player presentation, spacing and product-appropriate motion density, follow [design-guidelines.md](design-guidelines.md#clean-presentation-and-deliberate-spacing).
 
 ## Execution and failure recovery
@@ -141,6 +163,7 @@ Use the scaffold's local dependencies and bundled helpers before writing a new r
 
 - Discover tools independently (`command -v node`, then other needed tools); one missing optional command in an `&&` chain must not hide successful probes. Missing Pillow, ImageMagick or system FFmpeg is not a render blocker. On macOS, `sips` can make previews; use installed image tooling elsewhere. Preserve originals.
 - Install in `<out>/hero-video/`, normally `npm install --workspaces=false --no-audit --no-fund`. Inspect completion/exit status. A started background job is not a successful install; wait for the terminal notification. Do not launch two installers against the same directory. On a transient fetch failure, retry once with the same manager after inspecting the actual error; persistent failures need a concrete blocker, not unbounded retries or cache/config deletion.
+- Reuse an established research browser session for later QA. If connection setup is pending, inspect that job before starting another connection; surface a required user action promptly and continue independent work where possible. Use the host's supported completion/wait mechanism rather than starting extra poller jobs or repeatedly rechecking unchanged status.
 - Keep `render`, `verify` and browser checks as distinguishable stages. Save their logs/status. If render succeeded but the verifier failed, diagnose the verifier and reuse the existing MP4 unless encoding itself is wrong. Passing a self-authored source regex test cannot establish browser playback or visual quality.
 
 `verify` contains a small adapter to the **pinned 4.0.538** renderer's binary resolution; when changing Remotion versions, check that adapter and run the [real-media integration tests](../evals/bench-prompts.md#helper-integration-tests). Do not copy absolute binary paths from another machine. A local ad delivery and a publicly accessible share/HTML preview are separate outcomes.

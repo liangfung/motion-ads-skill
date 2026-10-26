@@ -2,6 +2,8 @@
 
 Read the matching structure before composing. These examples teach choreography and continuity; they do not choose a customer's brand, assets, copy or exact scene count. Both are thin 9:16 HTML cards around actual Remotion MP4s. A multi-scene video still fits one embedded card; scrollable landing HTML is a separate choice.
 
+For a story or feature-rich card, inspect its `Ad.tsx` and timing props as well as this overview. Adapt the relationships between evidence, attention and transitions; the basic `--layout card` scaffold is a functional starting point, not an equivalent creative reference. There is no need to render the unchanged study before working on the real brief.
+
 The runnable examples use **original illustrative vector art**, with visible study labels, no real product claims and no downloaded commercial assets. Their CTA opens the Remotion guide. Replace the entire illustrative content and destination for a real ad; analyze the actual source using [source-analysis.md](source-analysis.md). Never deliver the study as a sourced product/game advertisement.
 
 ## Single-stage reference families
@@ -71,6 +73,6 @@ The composition draws outgoing and incoming shots together during each transitio
 
 Both examples are authored at 720×1280 and 30fps: 12 seconds for single-stage and 18 seconds for story. Same-aspect resolution scaling is supported; changing aspect ratio requires recomposition, and changing duration requires retiming the authored frame constants and `qaFrames`.
 
-Both examples use the existing scaffold, dependencies, `Hero` composition ID, renderer and HTML CTA region. No new runtime library is needed. Install in `<out>/hero-video/`, then typecheck, `stills`, `render`, `check`, `verify`, and browser QA as described in [hero-video.md](hero-video.md). Package only after inspection.
+Both examples use the existing scaffold, dependencies, `Hero` composition ID, renderer and HTML CTA region. No new runtime library is needed. Install in `<out>/hero-video/`, then follow [staged inspection, rendering and final packaged-page QA](hero-video.md#render-and-inspect); packaging includes the structural/media checks.
 
-Their `qaFrames` list includes specific entrances, holds, exits, transition boundaries/midpoints and wrap. If timing/content changes, update that list. Compare holds together at approximately 360px display width for theme/spacing, inspect transitions at original resolution for collisions, then watch the encoded MP4 at normal speed. Source stills, media decoding and browser checks answer different questions.
+Their `qaFrames` list includes entrances, holds, transitions and wrap. If timing/content changes, update that list. Start with selective opener/detail frames, then inspect the full authored set once; use [staged QA](hero-video.md#render-and-inspect) for corrections and final encoded playback. Source stills, media decoding and browser checks answer different questions.

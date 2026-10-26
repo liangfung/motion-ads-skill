@@ -4,6 +4,7 @@ import { createHash } from "node:crypto";
 import {
   cpSync,
   existsSync,
+  mkdtempSync,
   mkdirSync,
   readFileSync,
   readdirSync,
@@ -13,6 +14,7 @@ import {
   writeFileSync,
 } from "node:fs";
 import { createRequire } from "node:module";
+import { tmpdir } from "node:os";
 import {
   dirname,
   delimiter,
@@ -28,7 +30,7 @@ import { fileURLToPath } from "node:url";
 const skill = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const [command, directory, ...extra] = process.argv.slice(2);
 const usage =
-  "Usage: node <skill>/scripts/project.mjs init|stills|render|check|verify|package <project> [--layout card|landing OR --example single-stage|story (init)] [Remotion flags (stills/render)]";
+  "Usage: node <skill>/scripts/project.mjs init|stills|render|check|verify|package <project> [--layout card|landing OR --example single-stage|story (init)] [--frames=0,90 (stills)] [Remotion flags (stills/render)]";
 
 function init(project) {
   if (extra[0] === "--example" && extra.length !== 2)
@@ -95,16 +97,16 @@ function init(project) {
 
 async function media(project) {
   const video = join(project, "hero-video");
-  let executable, ensureBrowser;
+  const require = createRequire(join(video, "package.json"));
+  let executable, renderer, manifest;
   try {
-    const require = createRequire(join(video, "package.json"));
-    const manifest = require.resolve("@remotion/cli/package.json");
+    manifest = require.resolve("@remotion/cli/package.json");
     const pkg = JSON.parse(readFileSync(manifest, "utf8"));
     executable = resolve(
       dirname(manifest),
       typeof pkg.bin === "string" ? pkg.bin : pkg.bin.remotion,
     );
-    ({ ensureBrowser } = require("@remotion/renderer"));
+    renderer = require("@remotion/renderer");
   } catch {
     throw new Error(
       `Remotion dependencies missing. Run npm install in ${video}.`,
@@ -130,6 +132,11 @@ async function media(project) {
     if (!value || value.startsWith("--")) throw new Error(`${name} needs a value`);
     return value;
   };
+  const frames = Math.max(1, Math.round(props.durationSeconds * 30));
+  const frameOption = command === "stills" ? option("--frames") : undefined;
+  const requestedFrames = frameOption === undefined ? null : frameOption.split(",").map(Number);
+  if (requestedFrames && (!/^\d+(,\d+)*$/.test(frameOption) || requestedFrames.some(frame => !Number.isInteger(frame) || frame < 0 || frame >= frames)))
+    throw new Error(`--frames requires comma-separated integer frames from 0 to ${frames - 1}`);
   const localFile = path => existsSync(path) && statSync(path).isFile();
   const candidates = [
     ...(process.platform === "darwin" ? [
@@ -145,7 +152,7 @@ async function media(project) {
     throw new Error("Browser executable must be an absolute local file path; a browser-tool CDP URL is not an executable path.");
   // Remotion resolves its existing browser cache relative to the project cwd.
   process.chdir(video);
-  const browser = await ensureBrowser({
+  const browser = await renderer.ensureBrowser({
     browserExecutable,
     chromeMode: option("--chrome-mode") || "headless-shell",
     onBrowserDownload: () => {
@@ -157,6 +164,10 @@ async function media(project) {
   const browserIndex = remotionFlags.findIndex(arg => arg === "--browser-executable" || arg.startsWith("--browser-executable="));
   if (browserIndex >= 0)
     remotionFlags.splice(browserIndex, remotionFlags[browserIndex] === "--browser-executable" ? 2 : 1);
+  if (command === "stills" && frameOption !== undefined) {
+    const index = remotionFlags.findIndex(arg => arg === "--frames" || arg.startsWith("--frames="));
+    remotionFlags.splice(index, remotionFlags[index] === "--frames" ? 2 : 1);
+  }
   const invoke = (args) => {
     const result = spawnSync(
       process.execPath,
@@ -180,14 +191,13 @@ async function media(project) {
     ]);
   if (command === "stills") {
     mkdirSync(join(project, "qa"), { recursive: true });
-    const frames = Math.max(1, Math.round(props.durationSeconds * 30));
-    const samples = new Set([0, Math.floor(frames / 2), frames - 1]);
-    if (props.qaFrames !== undefined) {
+    const samples = new Set(requestedFrames ?? [0, Math.floor(frames / 2), frames - 1]);
+    if (!requestedFrames && props.qaFrames !== undefined) {
       if (!Array.isArray(props.qaFrames) || props.qaFrames.some(frame =>
         !Number.isInteger(frame) || frame < 0 || frame >= frames))
         throw new Error(`qaFrames must contain integer frames from 0 to ${frames - 1}`);
       for (const frame of props.qaFrames) samples.add(frame);
-    } else if (props.presentation === "ad" && props.scenes?.length) {
+    } else if (!requestedFrames && props.presentation === "ad" && props.scenes?.length) {
       for (let i = 0; i < props.scenes.length; i++) {
         const start = Math.ceil((i * frames) / props.scenes.length);
         const end = Math.ceil(((i + 1) * frames) / props.scenes.length) - 1;
@@ -210,10 +220,37 @@ async function media(project) {
       }
     }
     for (const file of readdirSync(join(project, "qa"), { withFileTypes: true }))
-      if (file.isFile() && /^hero-\d+\.jpg$/.test(file.name))
+      if (!requestedFrames && file.isFile() && /^hero-\d+\.jpg$/.test(file.name))
         rmSync(join(project, "qa", file.name));
-    for (const frame of [...samples].sort((a, b) => a - b))
-      still(frame, join(project, `qa/hero-${frame}.jpg`));
+    const selected = [...samples].sort((a, b) => a - b);
+    const customConfig = readdirSync(video).some(name => name.startsWith("remotion.config.") &&
+      (name !== "remotion.config.ts" || !readFileSync(join(video, name)).equals(readFileSync(join(skill, "assets/remotion-template/remotion.config.ts")))));
+    if (remotionFlags.length || customConfig) {
+      // Preserve custom configuration and advanced flags through the existing CLI.
+      for (const frame of selected) still(frame, join(project, `qa/hero-${frame}.jpg`));
+    } else {
+      const started = Date.now();
+      const { bundle } = createRequire(manifest)("@remotion/bundler");
+      const bundleDirectory = mkdtempSync(join(tmpdir(), "motion-ads-bundle-"));
+      let instance;
+      try {
+        const serveUrl = await bundle({ entryPoint: join(video, "src/index.ts"), publicDir: join(video, "public"), outDir: bundleDirectory });
+        instance = await renderer.openBrowser("chrome", { browserExecutable: browser.path, logLevel: "error" });
+        const shared = { serveUrl, inputProps: props, puppeteerInstance: instance, browserExecutable: browser.path, logLevel: "error" };
+        const composition = await renderer.selectComposition({ ...shared, id: "Hero" });
+        for (const frame of selected) {
+          await renderer.renderStill({ ...shared, composition, frame, output: join(project, `qa/hero-${frame}.jpg`), imageFormat: "jpeg", overwrite: true });
+          console.log(`Rendered QA frame ${frame}`);
+        }
+      } finally {
+        try {
+          if (instance) await instance.close({ silent: true });
+        } finally {
+          rmSync(bundleDirectory, { recursive: true, force: true });
+        }
+      }
+      console.log(`Rendered ${selected.length} QA stills in ${((Date.now() - started) / 1000).toFixed(1)}s with one bundle/browser.`);
+    }
   } else {
     still(0, join(project, "poster.jpg"));
     invoke([
