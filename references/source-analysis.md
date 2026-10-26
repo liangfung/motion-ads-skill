@@ -6,6 +6,8 @@ Turn a URL, game link, brief, or supplied files into sourced ad copy, local asse
 
 Use the available browser to inspect the source directly, or delegate when the host supports browser workers. Collect product facts with source URLs, original image/video URLs where available, and screenshots. Inspect downloaded images and browser screenshots with an available image-viewing tool. Use fetch/download tools where useful; tool names and delegation mechanisms depend on the host.
 
+For product research, prefer an available, authorized browser session that preserves the user's existing login state. When supported, attach to that session through CDP or the browser tool's equivalent mechanism, following the host's connection instructions.
+
 For a source that is blocked or login-walled, report the access limit. For a retail product, look for the official manufacturer source for the exact model/variant, and use supplied material when available; keep that fallback provenance explicit. Do not transfer another model's features or assume an unverified selected color. Ask for missing copy/assets only when the unresolved information materially blocks the ad. Never infer that a failed fetch means an attached image URL is unavailable: inspect the message for the actual URL and try downloading it to a local file. Copy workspace assets rather than modifying their originals.
 
 Keep the user's CTA URL exactly when intentional; do not automatically strip query parameters. A separate normalized URL may be useful for source lookup, but it must not silently replace a campaign/affiliate destination. Do not expose session tokens, private signed URLs, cookies, or API secrets in HTML, `brief.json`, or `dist/`.
