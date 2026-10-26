@@ -1,0 +1,21 @@
+{
+  "image": "product.svg",
+  "presentation": "ad",
+  "imageMode": "cutout",
+  "motif": "rings",
+  "bg": "#f4f5f7",
+  "surface": "#e6e8ec",
+  "accent": "#111318",
+  "text": "#111318",
+  "ctaText": "#ffffff",
+  "brand": "Product name",
+  "ctaLabel": "Learn more",
+  "width": 720,
+  "height": 1280,
+  "durationSeconds": 12,
+  "scenes": [
+    { "eyebrow": "Meet the product", "headline": "One reason to care.", "body": "Replace with a distinctive, source-backed promise." },
+    { "eyebrow": "Look closer", "headline": "Show what makes it different.", "labels": ["Verified feature", "Useful detail"] },
+    { "eyebrow": "Make your next move", "headline": "A clear next step.", "body": "End on the product, its promise, and the action." }
+  ]
+}

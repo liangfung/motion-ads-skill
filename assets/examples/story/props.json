@@ -1,0 +1,13 @@
+{
+  "presentation": "ad", "image": "product.svg", "imageMode": "cutout", "motif": "none",
+  "brand": "NOCTURNE", "ctaLabel": "View the motion guide",
+  "bg": "#091b25", "surface": "#142d37", "accent": "#d5b881", "text": "#eee8d7", "ctaText": "#091b25",
+  "width": 720, "height": 1280, "durationSeconds": 18,
+  "scenes": [
+    { "eyebrow": "FOLLOW A LITTLE CURIOSITY", "headline": "A world\nworth finding." },
+    { "eyebrow": "STEP INTO THE UNKNOWN", "headline": "Look beyond\nthe familiar.", "labels": ["Winding paths. Quiet landmarks.", "One world, many perspectives."] },
+    { "eyebrow": "LOOK A LITTLE CLOSER", "headline": "Small details.\nNew discoveries.", "labels": ["A light to follow.", "Depth built one layer at a time."] },
+    { "eyebrow": "KEEP THE STORY MOVING", "headline": "Let curiosity\nlead the way.", "labels": ["A shared visual language.", "A clear next step."] }
+  ],
+  "qaFrames": [0, 50, 86, 87, 96, 104, 105, 150, 236, 237, 246, 254, 255, 300, 371, 372, 381, 389, 390, 450, 521, 522, 531, 539]
+}

@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="description" content="Replace with a source-backed product description.">
+    <title>Product name</title>
+    <style>
+      /* Replace the visual direction with the product's own identity. */
+      :root {
+        --bg: #f7f6f2; --surface: #eeece5; --text: #22251f;
+        --muted: #62665a; --accent: #334b33; --on-accent: #ffffff;
+        --line: #d8dacd; --radius: 24px;
+        --font-display: ui-serif, Georgia, serif;
+        --font-text: ui-sans-serif, system-ui, sans-serif;
+        color-scheme: light;
+      }
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--font-text); }
+      a { color: inherit; }
+      a:focus-visible, summary:focus-visible { outline: 3px solid var(--accent); outline-offset: 5px; }
+      .wrap { width: min(1240px, calc(100% - 64px)); margin-inline: auto; }
+      .nav { min-height: 96px; display: flex; justify-content: space-between; align-items: center; gap: 24px; border-bottom: 1px solid var(--line); }
+      .brand { font-size: 20px; font-weight: 750; letter-spacing: -.04em; text-decoration: none; }
+      .nav-link { font-size: 14px; text-underline-offset: 5px; }
+      .hero-layout { min-height: 660px; padding: 88px 0; display: grid; grid-template-columns: .9fr 1.1fr; align-items: center; gap: 64px; }
+      .eyebrow { margin: 0 0 24px; font-size: 13px; color: var(--muted); }
+      h1 { margin: 0; max-width: 11ch; font: 500 clamp(48px, 5.7vw, 80px)/.98 var(--font-display); letter-spacing: -.045em; text-wrap: balance; }
+      .intro { margin: 28px 0 32px; max-width: 36ch; color: var(--muted); font-size: 18px; line-height: 1.65; }
+      .cta { display: inline-flex; align-items: center; justify-content: center; min-height: 54px; padding: 16px 30px; border-radius: 999px; background: var(--accent); color: var(--on-accent); font-size: 16px; font-weight: 650; text-decoration: none; transition: transform 180ms ease; }
+      .cta:active { transform: scale(.97); }
+      /* Match this ratio to hero-video/props.json width / height. */
+      .hero { aspect-ratio: 5/3; position: relative; overflow: hidden; background: var(--surface); border-radius: var(--radius); }
+      .hero video { width: 100%; height: 100%; display: block; object-fit: contain; }
+      #motion-toggle { position: absolute; right: 12px; top: 12px; min-width: 44px; min-height: 44px; padding: 5px 12px; border: 1px solid var(--muted); border-radius: 5px; background: var(--bg); color: var(--text); cursor: pointer; }
+      #motion-toggle:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+      .caption { margin: 14px 0 0; font-size: 12px; line-height: 1.5; color: var(--muted); }
+      .details { padding: 56px 0 88px; border-top: 1px solid var(--line); display: grid; grid-template-columns: .9fr 1.1fr; gap: 64px; }
+      h2 { margin: 0; max-width: 18ch; font: 500 clamp(30px, 3vw, 46px)/1.1 var(--font-display); letter-spacing: -.025em; }
+      details { border-bottom: 1px solid var(--line); }
+      summary { padding: 24px 0; cursor: pointer; font-size: 18px; font-weight: 600; }
+      details p { max-width: 55ch; margin: 0 0 24px; color: var(--muted); line-height: 1.7; }
+      footer { padding: 24px 0 32px; border-top: 1px solid var(--line); font-size: 12px; color: var(--muted); }
+      .hero-copy, .hero { animation: arrive 700ms cubic-bezier(.2,.8,.2,1) both; }
+      .hero { animation-delay: 100ms; }
+      @keyframes arrive { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+      @media (max-width: 760px) {
+        .wrap { width: calc(100% - 40px); }
+        .nav { min-height: 76px; }
+        .hero-layout { min-height: 0; padding: 44px 0 48px; grid-template-columns: 1fr; gap: 36px; }
+        h1 { max-width: 13ch; font-size: clamp(44px, 12vw, 68px); }
+        .intro { margin: 20px 0 24px; font-size: 16px; }
+        .cta { width: 100%; }
+        .details { padding: 36px 0 48px; grid-template-columns: 1fr; gap: 24px; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        html { scroll-behavior: auto; }
+        *, *::before, *::after { animation: none !important; transition: none !important; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <nav class="nav" aria-label="Main">
+        <a class="brand" href="#top">Brand name</a>
+        <a class="nav-link" href="#details">Explore the details</a>
+      </nav>
+      <main id="top">
+        <section class="hero-layout" aria-labelledby="headline">
+          <div class="hero-copy">
+            <p class="eyebrow">Product category</p>
+            <h1 id="headline">One clear reason to care.</h1>
+            <p class="intro">Replace this with the product's distinctive benefit, grounded in the supplied source.</p>
+            <a class="cta" id="cta" href="https://example.com" target="_blank" rel="noopener noreferrer">Explore the product</a>
+          </div>
+          <div>
+            <div class="hero" id="hero">
+              <video id="hero-video" src="./hero.mp4" poster="./poster.jpg" autoplay muted loop playsinline preload="metadata" aria-label="Product advertising video"></video>
+              <button hidden id="motion-toggle" type="button" aria-controls="hero-video" aria-pressed="false">Pause</button>
+            </div>
+            <p class="caption">Replace with a useful, source-backed caption, or remove.</p>
+          </div>
+        </section>
+        <section class="details" id="details" aria-labelledby="details-title">
+          <h2 id="details-title">The details that make a difference.</h2>
+          <div>
+            <details open><summary>First distinctive benefit</summary><p>Use one specific fact from the source. Remove this module when no supporting detail is available.</p></details>
+            <details><summary>Second distinctive benefit</summary><p>Explain what this means for the intended audience using verified product details.</p></details>
+            <details><summary>Third distinctive benefit</summary><p>Keep the wording useful and specific. The product's real qualities supply the proof.</p></details>
+          </div>
+        </section>
+      </main>
+      <footer>Brand name</footer>
+    </div>
+    <script>
+      (function () {
+        var video = document.getElementById("hero-video");
+        var button = document.getElementById("motion-toggle");
+        var preference = window.matchMedia("(prefers-reduced-motion: reduce)");
+        var userPaused = false;
+        var restoredMedia = null;
+        function updatePlayback() {
+          if (preference.matches) {
+            video.removeAttribute("autoplay");
+            video.pause();
+            var media = JSON.stringify([video.getAttribute("src"), video.getAttribute("poster")]);
+            if (restoredMedia !== media) {
+              restoredMedia = media;
+              video.load();
+            }
+          } else {
+            restoredMedia = null;
+            if (document.hidden || userPaused) video.pause();
+            else video.play().catch(function () {});
+          }
+          if (button) {
+            button.disabled = preference.matches;
+            button.textContent = preference.matches ? "Motion off" : userPaused ? "Play" : "Pause";
+            button.setAttribute("aria-pressed", String(userPaused || preference.matches));
+          }
+        }
+        if (button) button.addEventListener("click", function () { userPaused = !userPaused; updatePlayback(); });
+        video.addEventListener("loadedmetadata", updatePlayback);
+        preference.addEventListener("change", updatePlayback);
+        document.addEventListener("visibilitychange", updatePlayback);
+        updatePlayback();
+      })();
+    </script>
+  </body>
+</html>
