@@ -62,7 +62,7 @@ The destination belongs to the real HTML link, preserving intentional query para
 node <skill-root>/scripts/project.mjs stills <out>
 ```
 
-2. Inspect the images under `<out>/qa/` with `readFile`. Stills currently launch one Remotion CLI process per frame, so dense sampling has startup/bundling overhead; choose meaningful frames and allow the job to finish. Without an authored frame list, the helper samples first/middle/last plus default ad-scene holds and transitions. For custom timing set `qaFrames: [0, ...]` in `props.json` to include actual holds and each transition's start/middle/end, plus the loop wrap; frames are integer indices at 30fps. Read the **actual rendered words** in every scene. Check cropped subjects, text wraps, label overlap, and the CTA region. Frame 0 becomes the poster and must already communicate a useful ad state.
+2. Inspect the images under `<out>/qa/` with an available image-viewing tool. Stills currently launch one Remotion CLI process per frame, so dense sampling has startup/bundling overhead; choose meaningful frames and allow the job to finish. Without an authored frame list, the helper samples first/middle/last plus default ad-scene holds and transitions. For custom timing set `qaFrames: [0, ...]` in `props.json` to include actual holds and each transition's start/middle/end, plus the loop wrap; frames are integer indices at 30fps. Read the **actual rendered words** in every scene. Check cropped subjects, text wraps, label overlap, and the CTA region. Frame 0 becomes the poster and must already communicate a useful ad state.
 3. Render and check:
 
 ```sh
@@ -85,11 +85,11 @@ node <skill-root>/scripts/project.mjs render <out> --browser-executable=/path/to
 
 ### Open the local artifact
 
-Give the browser agent the absolute path to `<out>/index.html`, then `<out>/dist/index.html` after packaging. Let it choose a supported local-file or built-in preview according to its own system instructions and tool descriptions. Keep the HTML and relative resources together. Confirm the actual MP4/poster load and playback time advances before reviewing motion.
+Open the absolute path to `<out>/index.html`, then `<out>/dist/index.html` after packaging, with the available browser tool. Use its supported local-file or built-in preview according to the host's system instructions and tool descriptions. If delegating, pass the same paths and checks to the browser worker. Keep the HTML and relative resources together. Confirm the actual MP4/poster load and playback time advances before reviewing motion.
 
 ### Browser tool capabilities
 
-Use the browser tool's supported actions and inspection APIs. Native browser actions, DOM/accessibility inspection or permitted page-side JavaScript may supply these capabilities; arbitrary CDP access and shell execution inside the browser agent are not requirements.
+Use the browser tool's supported actions and inspection APIs. Native browser actions, DOM/accessibility inspection or permitted page-side JavaScript may supply these capabilities; arbitrary CDP access and a separate browser worker with shell execution are not requirements.
 
 | Capability | Required use |
 |---|---|
@@ -100,11 +100,11 @@ Use the browser tool's supported actions and inspection APIs. Native browser act
 | Exercise interaction and preferences | Perform real pointer and keyboard actions, observe CTA navigation/new tabs, and test reduced-motion preferences on initial load and after changes |
 | Diagnose and clean up | Inspect console/page errors and failed resource requests through available diagnostics; close task-created tabs/sessions when finished |
 
-Asset downloads and report writes may be performed by the parent command/file tools; the browser can return URLs, observations and screenshots. Browser-side JavaScript evaluation is useful, but an equivalent tool inspection API is sufficient. A fetch-only browser cannot establish responsive rendering, autoplay, real clicks or preference handling. If a capability or connection is unavailable, mark the affected QA as blocked or partial instead of substituting a static screenshot for runtime evidence.
+Asset downloads and report writes may use the main agent's command/file tools; a browser worker can return URLs, observations and screenshots. Browser-side JavaScript evaluation is useful, but an equivalent tool inspection API is sufficient. A fetch-only browser cannot establish responsive rendering, autoplay, real clicks or preference handling. If a capability or connection is unavailable, mark the affected QA as blocked or partial instead of substituting a static screenshot for runtime evidence.
 
 ### Browser tool and render browser
 
-Inspect the browser tool's actual configuration first. In Pochi this can include `browserAgentSettings` in `~/.pochi/config.jsonc` and the browser agent's environment diagnosis. Read only the relevant browser settings and do not copy credentials into logs or delivery files. Follow the configured browser mode or its documented default, and pass the confirmed mode from research into later QA. Finding an installed Chrome does not select local CDP. The tool may already use managed Chrome or connect to local Chrome via CDP. Reuse a confirmed executable path visible to the render process. A remote/sandboxed browser may expose only a CDP session; that URL is not the local executable required by this scaffold, and the helper does not attach to an arbitrary existing browser session.
+Follow the browser tool's own instructions for connection and runtime selection; this skill requires no host-specific configuration file. Remotion rendering separately needs an existing local Chrome/Chromium executable visible to the render process. Reuse a confirmed executable path when available. A browser session or CDP URL is not that executable, and the helper does not attach to an arbitrary existing browser session.
 
 Resolution order is explicit `--browser-executable`, then `REMOTION_BROWSER_EXECUTABLE` / `CHROME_PATH`, common installed Chrome/Chromium locations and PATH, then Remotion's existing matching cache. Both flag forms (`--browser-executable=/absolute/path` and `--browser-executable /absolute/path`) accept spaces without shell splitting when quoted. Remotion's `ensureBrowser()` is called with a callback that throws before any browser download; its returned existing path is passed explicitly to each still/render command. An explicit invalid path fails instead of triggering a download.
 
@@ -129,7 +129,7 @@ Keep a single concise report under `qa/` (for example `review.md`, or update an 
 | Browser | Tested file path/URL, preview mode and viewports, loaded dimensions and advancing time, real CTA interaction/focus, reduced-motion behavior and resource/console findings |
 | Creative | Inspected holds, transitions, wrap and normal-speed playback; readability, spacing, continuity and findings fixed |
 
-Mark each result `passed`, `failed`, `blocked` or `not run`; state partial coverage within a row instead of hiding it behind an overall pass. A media success, screenshot or report file cannot substitute for playback/interaction evidence. If the browser child cannot write files or run commands, have it return observations/screenshots and let the parent persist the report; do not make it repeatedly attempt unavailable tools or install a test framework for routine ad QA.
+Mark each result `passed`, `failed`, `blocked` or `not run`; state partial coverage within a row instead of hiding it behind an overall pass. A media success, screenshot or report file cannot substitute for playback/interaction evidence. If a browser worker cannot write files or run commands, have it return observations/screenshots and let the main agent persist the report; do not make it repeatedly attempt unavailable tools or install a test framework for routine ad QA.
 
 After changes, recheck affected evidence and update the report. A new `media-check.json` does not refresh earlier browser/creative conclusions. If a required review is blocked, keep the partial artifact and report the blocker; packaging success alone does not mean the ad is complete.
 

@@ -1,6 +1,6 @@
 # Question Guide
 
-Research first; ask only when the answer changes the result. Use Pochi's `askFollowupQuestion`, in the user's language. Its current schema supports 1–4 questions per call, each with a short header and 2–4 distinct options; the UI adds “Other.” Put a recommendation first and suffix its label with `(Recommended)`.
+Research first; ask only when the answer changes the result, in the user's language. Use the host's clarification tool when available, following its supported schema, or ask directly in the conversation. Keep questions concise and offer a few distinct choices with a recommendation when useful.
 
 Usually ask one compact round before the first draft, and a second if a real dependency remains. There is no fixed questionnaire to complete. Already clear choices need no reconfirmation. If the user explicitly delegates the format decision or asks for no follow-up questions, state sensible assumptions and proceed with supported content; do not invent missing facts.
 

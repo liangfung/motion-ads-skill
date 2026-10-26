@@ -4,7 +4,7 @@ Turn a URL, game link, brief, or supplied files into sourced ad copy, local asse
 
 ## Read the real source
 
-In normal Pochi use, delegate website inspection to `newTask` with `agentType: "browser"`. Ask it to return product facts with source URLs, original image/video URLs where available, and screenshots. Use `readFile` to inspect downloaded images and browser screenshots. Other fetch/browser tools may be used when present, but do not rely on `webFetch` or `browser_evaluate` names.
+Use the available browser to inspect the source directly, or delegate when the host supports browser workers. Collect product facts with source URLs, original image/video URLs where available, and screenshots. Inspect downloaded images and browser screenshots with an available image-viewing tool. Use fetch/download tools where useful; tool names and delegation mechanisms depend on the host.
 
 For a source that is blocked or login-walled, report the access limit. For a retail product, look for the official manufacturer source for the exact model/variant, and use supplied material when available; keep that fallback provenance explicit. Do not transfer another model's features or assume an unverified selected color. Ask for missing copy/assets only when the unresolved information materially blocks the ad. Never infer that a failed fetch means an attached image URL is unavailable: inspect the message for the actual URL and try downloading it to a local file. Copy workspace assets rather than modifying their originals.
 

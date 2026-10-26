@@ -15,9 +15,9 @@ User direction and brand identity take precedence over presets. Derive the desig
 
 ## Capabilities
 
-Use file reading and image inspection, commands that can write/download/run Node and Remotion, and a browser with the [research and QA capabilities](references/hero-video.md#browser-tool-capabilities). Tool names are environment-specific. In Pochi, browser access normally uses `newTask` with `agentType: "browser"`; clarification can use `askFollowupQuestion`. Track long-running jobs through completion and stop task-created services when finished.
+Use file reading/writing and image inspection, commands that can download/run Node and Remotion, and a browser with the [research and QA capabilities](references/hero-video.md#browser-tool-capabilities). Map these capabilities to the host agent's available tools; no specific tool names or delegation API are required. Ask unresolved questions through the available clarification tool or directly in the conversation. Track long-running jobs through completion.
 
-Browser children need the confirmed runtime mode and relevant user constraints. Use existing browser infrastructure; the render helper blocks Chrome downloads. The parent can save reports or execute commands unavailable to a browser child. Image generation, audio tools, additional skills and system FFmpeg are optional rather than prerequisites.
+Resolve `<skill-root>` to the directory containing this loaded `SKILL.md`; resolve its references, scripts and assets from there, independently of the workspace or current directory. Browser work can run directly or through an available browser worker. When delegating, pass the relevant source/artifact paths, checks and user constraints; use absolute skill-resource paths when they are needed. Use existing browser infrastructure; the render helper blocks Chrome downloads. Image generation, audio tools, additional skills and system FFmpeg are optional rather than prerequisites.
 
 ## 1. Research and record
 
@@ -39,7 +39,7 @@ Even with a short prompt, run the [type comparison](references/design-guidelines
 
 ## 4. Build and render
 
-Follow [hero-video.md](references/hero-video.md) for setup, props, render commands and browser requirements. Resolve `<skill-root>` to the installed skill directory and `<out>` to the project root, not its `hero-video/` subdirectory.
+Follow [hero-video.md](references/hero-video.md) for setup, props, render commands and browser requirements. Resolve `<out>` to the project root, not its `hero-video/` subdirectory.
 
 ```sh
 node <skill-root>/scripts/project.mjs init <out> --layout card
@@ -54,7 +54,7 @@ For a card, align the real HTML link with the [video CTA artwork](references/her
 
 Complete checks in order: source/variant/claims and exact CTA, structural `check`, encoded-media `verify`, browser playback/interaction, then [creative review](references/design-guidelines.md#self-critique-before-delivery). Use the detailed [render and inspection workflow](references/hero-video.md#render-and-inspect).
 
-Inspect the actual MP4, scene holds, transitions and loop at the intended display size. Give the browser agent the absolute HTML path for its [supported local-artifact preview](references/hero-video.md#open-the-local-artifact). A poster or successful navigation does not establish playback or pacing. Fix findings and recheck affected output. Keep one concise [QA report](references/hero-video.md#review-evidence) separating source, media, browser and creative evidence; mark unavailable checks honestly.
+Inspect the actual MP4, scene holds, transitions and loop at the intended display size. Open the absolute HTML path through the browser's [supported local-artifact preview](references/hero-video.md#open-the-local-artifact). A poster or successful navigation does not establish playback or pacing. Fix findings and recheck affected output. Keep one concise [QA report](references/hero-video.md#review-evidence) separating source, media, browser and creative evidence; mark unavailable checks honestly.
 
 ## 6. Package and deliver
 
@@ -62,6 +62,6 @@ Inspect the actual MP4, scene holds, transitions and loop at the intended displa
 node <skill-root>/scripts/project.mjs package <out>
 ```
 
-Packaging reruns media verification before replacing `dist/`; failed verification preserves an existing delivery. It does not perform browser or creative approval. Have the browser agent open the packaged `dist/index.html` for a final interaction/playback check and deliver the whole folder. Retain the working project for edits. Do not publish or add tracking unless requested.
+Packaging reruns media verification before replacing `dist/`; failed verification preserves an existing delivery. It does not perform browser or creative approval. Open the packaged `dist/index.html` in the browser for a final interaction/playback check and deliver the whole folder. Retain the working project for edits. Do not publish or add tracking unless requested.
 
-Report the output path, chosen story/style/mode/CTA, source assumptions, and separate verification results or blockers. Completion includes a narrative local MP4/poster and inspected browser output; identify partial results precisely. Public hosting and task/share-page sync are separate outcomes.
+Report the output path, chosen story/style/mode/CTA, source assumptions, and separate verification results or blockers. Completion includes a narrative local MP4/poster and inspected browser output; identify partial results precisely. Public hosting and sharing are separate outcomes.

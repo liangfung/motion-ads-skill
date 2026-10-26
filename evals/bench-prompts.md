@@ -48,6 +48,12 @@ Before scaffolding, the agent should research enough to summarize the source and
 
 For a separate source-truthfulness test, request a “gameplay trailer” while supplying only screenshots. The agent should inspect available sources, ask a focused question if the requirement remains unresolved, and avoid substituting artwork animation while claiming gameplay.
 
+## Host portability
+
+Load this skill from an absolute directory outside the working project and run a short-input scenario with the host's own file, command, image-inspection and browser tools. Do not provide a delegation API or a special clarification UI. The agent should resolve skill resources from the loaded `SKILL.md`, research and inspect directly, and ask in the conversation only when a material choice remains unresolved.
+
+When a host supports browser workers, repeat with a worker whose working directory differs from the main agent's. Pass absolute resource/artifact paths and checks. Browser setup should follow that host's own instructions without additional configuration-file or runtime-mode requirements from this skill. Record which capabilities were exercised and which remain unavailable; this scenario does not establish support for every agent host.
+
 ## Helper integration tests
 
 Run the helper suite independently of the host application's tests:

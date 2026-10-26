@@ -288,7 +288,7 @@ function delivery(t) {
   mkdirSync(join(out, "hero-video"));
   writeFileSync(
     join(out, "index.html"),
-    '<html lang="en"><title>Product</title><video id="hero-video" src="hero.mp4" poster="poster.jpg" autoplay muted loop playsinline></video><img src="assets/product.svg"><a id="cta" href="https://store.steampowered.com/app/367520/?utm_source=pochi">View on Steam</a></html>',
+    '<html lang="en"><title>Product</title><video id="hero-video" src="hero.mp4" poster="poster.jpg" autoplay muted loop playsinline></video><img src="assets/product.svg"><a id="cta" href="https://store.steampowered.com/app/367520/?utm_source=campaign">View on Steam</a></html>',
   );
   // Structural fixtures only: actual encoding and playback are covered by the render/browser smoke run.
   writeFileSync(
@@ -344,7 +344,7 @@ test("check fails for missing local media and preserves a supplied tracking URL"
   assert.equal(run("check", out).status, 0);
   assert.match(
     readFileSync(join(out, "index.html"), "utf8"),
-    /utm_source=pochi/,
+    /utm_source=campaign/,
   );
   rmSync(join(out, "assets/product.svg"));
   const result = run("check", out);
