@@ -9,6 +9,8 @@ import {
   existsSync,
   cpSync,
   symlinkSync,
+  lstatSync,
+  readdirSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
@@ -193,6 +195,12 @@ test("stills selects only requested frames, reuses a browser and preserves other
   const frames = readFileSync(join(out, "hero-video/frames.jsonl"), "utf8").trim().split("\n").map(JSON.parse);
   assert.deepEqual(frames.map(frame => frame.frame), [0, 56]);
   assert.ok(frames.every(frame => frame.sharedBrowser));
+  for (const frame of [0, 56]) {
+    const path = join(out, `qa/hero-${frame}.jpg`);
+    assert.ok(existsSync(path));
+    assert.ok(result.stdout.includes(path), "print the actual selected image path for inspection");
+  }
+  assert.ok(!result.stdout.includes(join(out, "qa/hero-39.jpg")), "do not present retained frames as fresh evidence");
   assert.equal(existsSync(readFileSync(join(out, "hero-video/bundle-directory.txt"), "utf8")), false);
   assert.equal(readFileSync(join(out, "qa/hero-39.jpg"), "utf8"), "previous hold");
   assert.deepEqual(readFileSync(join(out, "hero-video/props.json")), props);
@@ -427,6 +435,73 @@ test("package rejects corrupt or mismatched media before replacing an existing d
   assert.match(mismatch.stderr, /dimensions differ/);
   assert.deepEqual(readFileSync(join(out, "dist/hero.mp4")), delivered);
 });
+
+test("package materializes internal asset symlinks into a standalone delivery", {
+  skip: !process.env.REMOTION_TEST_PROJECT,
+}, (t) => {
+  const out = encodedDelivery(t);
+  const artwork = readFileSync(join(out, "assets/product.svg"));
+  assert.equal(run("package", out).status, 0);
+  writeFileSync(join(out, "dist/previous.txt"), "obsolete delivery");
+  const entries = readdirSync(out).sort();
+  symlinkSync("product.svg", join(out, "assets/alias.svg"));
+  assert.equal(run("check", out).status, 0);
+  const result = run("package", out);
+  assert.equal(result.status, 0, result.stderr);
+  assert.equal(existsSync(join(out, "dist/previous.txt")), false);
+  assert.deepEqual(readdirSync(out).sort(), entries, "successful replacement should leave no staging or backup");
+  assert.equal(lstatSync(join(out, "dist/assets/alias.svg")).isSymbolicLink(), false);
+  rmSync(join(out, "assets"), { recursive: true });
+  assert.deepEqual(readFileSync(join(out, "dist/assets/alias.svg")), artwork);
+  assert.equal(run("check", join(out, "dist")).status, 0);
+});
+
+for (const failure of ["copy", "validation", "replace"]) {
+  test(`package preserves the previous delivery after a ${failure} failure`, {
+    skip: !process.env.REMOTION_TEST_PROJECT,
+  }, (t) => {
+    const out = encodedDelivery(t);
+    const valid = run("package", out);
+    assert.equal(valid.status, 0, valid.stderr);
+    writeFileSync(join(out, "dist/previous.txt"), "previous delivery");
+    const html = readFileSync(join(out, "dist/index.html"));
+    const video = readFileSync(join(out, "dist/hero.mp4"));
+    const entries = readdirSync(out).sort();
+    // Inject filesystem failures in the child only; keep real copying, validation and rollback.
+    const preload = join(temporary(t), "fail-package.mjs");
+    writeFileSync(preload, `
+      import fs from 'node:fs';
+      import {syncBuiltinESMExports} from 'node:module';
+      const copy = fs.cpSync;
+      const rename = fs.renameSync;
+      let failed = false;
+      fs.cpSync = (source, target, ...args) => {
+        if (${JSON.stringify(failure)} === 'copy' && source === ${JSON.stringify(join(out, "assets/product.svg"))})
+          throw new Error('Injected copy failure');
+        const result = copy(source, target, ...args);
+        if (${JSON.stringify(failure)} === 'validation' && source === ${JSON.stringify(join(out, "index.html"))})
+          fs.writeFileSync(target, '<html>Incomplete delivery</html>');
+        return result;
+      };
+      fs.renameSync = (source, target) => {
+        if (${JSON.stringify(failure)} === 'replace' && target === ${JSON.stringify(join(out, "dist"))} && !failed) {
+          failed = true;
+          throw new Error('Injected replacement failure');
+        }
+        return rename(source, target);
+      };
+      syncBuiltinESMExports();
+    `);
+    const result = spawnSync(process.execPath, ["--import", preload, cli, "package", out], { encoding: "utf8" });
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, /Injected (?:copy|replacement) failure|hero-video element/);
+    assert.ok(existsSync(join(out, "dist/previous.txt")), "previous delivery must survive");
+    assert.equal(readFileSync(join(out, "dist/previous.txt"), "utf8"), "previous delivery");
+    assert.deepEqual(readFileSync(join(out, "dist/index.html")), html);
+    assert.deepEqual(readFileSync(join(out, "dist/hero.mp4")), video);
+    assert.deepEqual(readdirSync(out).sort(), entries, "failed staging should be cleaned up");
+  });
+}
 
 test("check fails for missing local media and preserves a supplied tracking URL", (t) => {
   const out = delivery(t);

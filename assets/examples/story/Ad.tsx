@@ -1,4 +1,4 @@
-// Motion study: 720x1280, 30fps, 18s. Same-aspect resolution scaling is supported.
+// Motion study: 720x1280, 30fps, 15s. Same-aspect resolution scaling is supported.
 // Retiming requires changing the frame constants and props.qaFrames; other aspect ratios need recomposition.
 import {
   AbsoluteFill,
@@ -15,6 +15,7 @@ export type AdScene = {
   body?: string;
   image?: string;
   labels?: string[];
+  details?: { heading: string; body: string }[];
 };
 const INK = "#091b25",
   BONE = "#eee8d7",
@@ -23,12 +24,12 @@ const INK = "#091b25",
 const clamp = (n: number) => Math.max(0, Math.min(1, n));
 const ease = Easing.inOut(Easing.cubic);
 // Authored shot boundaries in frames; transitions begin before each boundary.
-const STARTS = [0, 105, 255, 390],
+const STARTS = [0, 75, 210, 360],
   TRANSITION = 18;
 
 // Original vector world. Replace with verified artwork for a real campaign.
 const World = ({ frame, variant = 0 }: { frame: number; variant?: number }) => {
-  const drift = Math.sin((frame / 540) * Math.PI * 2) * 9;
+  const drift = Math.sin((frame / 450) * Math.PI * 2) * 9;
   return (
     <svg
       width="100%"
@@ -166,6 +167,10 @@ export const Ad = ({
     if (!scene) throw new Error("Story example needs four scenes");
     const age = i === 0 ? 99 : frame - STARTS[i] + TRANSITION;
     const e = entrance(age);
+    // Hand copy over once; artwork can continue moving through the whole mask.
+    const copyOpacity = p === 0
+      ? 1
+      : i === index ? 1 - clamp(p * 2) : clamp((p - 0.5) * 2);
     const line = (text: string, j: number) => {
       const r = entrance(age, 4 + j * 7);
       return (
@@ -264,12 +269,13 @@ export const Ad = ({
             left: 56,
             top: i === 0 ? 776 : 192,
             width: 608,
+            opacity: copyOpacity,
           }}
         >
           <div
             style={{
               color: GOLD,
-              fontSize: 22,
+              fontSize: 28,
               letterSpacing: ".14em",
               marginBottom: 24,
               opacity: e,
@@ -289,8 +295,9 @@ export const Ad = ({
             {scene.headline.split("\n").map(line)}
           </div>
         </div>
-        {i !== 0 && (
-          <div style={{ position: "absolute", left: 56, top: 805, width: 608 }}>
+        {/* Exploration: readable rows build in order underneath the shared image window. */}
+        {i === 1 && (
+          <div style={{ position: "absolute", left: 56, top: 805, width: 608, opacity: copyOpacity }}>
             {(scene.labels ?? []).map((label, j) => {
               const r = entrance(age, 18 + j * 12);
               return (
@@ -313,6 +320,49 @@ export const Ad = ({
                 </div>
               );
             })}
+          </div>
+        )}
+        {/* Detail: paired cards separate the visual cue from its meaning; no invented metrics. */}
+        {i === 2 && (
+          <div style={{
+            position: "absolute", left: 56, top: 805, width: 608,
+            display: "flex", gap: 20, color: BONE, opacity: copyOpacity,
+          }}>
+            {(scene.details ?? []).map(({ heading, body }, j) => {
+              const r = entrance(age, 20 + j * 12);
+              return (
+                <div key={heading} style={{
+                  flex: 1, minWidth: 0, padding: "24px 22px",
+                  borderTop: `2px solid ${GOLD}`, background: "#b4d9cf12",
+                  opacity: clamp(r), transform: `translateY(${(1 - r) * 24}px)`,
+                }}>
+                  <div style={{ color: GOLD, fontFamily: "Georgia, serif", fontSize: 42, marginBottom: 18 }}>
+                    {heading}
+                  </div>
+                  <div style={{ fontSize: 29, lineHeight: 1.3 }}>
+                    {body}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+        {/* Close: a short synthesis and compact tags leave the action prominent. */}
+        {i === 3 && (
+          <div style={{ position: "absolute", left: 56, top: 805, width: 608, opacity: copyOpacity }}>
+            <div style={{ color: BONE, fontSize: 34, lineHeight: 1.3, marginBottom: 28, opacity: clamp(entrance(age, 15)) }}>
+              {scene.body}
+            </div>
+            <div style={{ display: "flex", gap: 16 }}>
+              {(scene.labels ?? []).map((label, j) => (
+                <div key={label} style={{
+                  padding: "12px 18px", border: `1px solid ${LIGHT}66`,
+                  color: LIGHT, fontSize: 28, opacity: clamp(entrance(age, 24 + j * 8)),
+                }}>
+                  {label}
+                </div>
+              ))}
+            </div>
           </div>
         )}
         <div

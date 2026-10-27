@@ -14,6 +14,17 @@ Record the skill source snapshot, model, loaded additional skills, prompt, human
 
 Observe whether the agent derives a coherent visual contract and selected asset roles, authors product-specific motion, preserves reading holds and passes correctness/media/browser checks before creative approval. Compare old/new outputs as a contact sheet and normal-speed video. One attractive render is not proof of reliable improvement; keep failures and partial runs in the result. The longer requests below remain useful acceptance scenarios, not required input verbosity.
 
+## Focused workflow checks
+
+Use these alongside the full builds to isolate acceptance decisions from research/render cost:
+
+- Supply a packaged card with successful `media-check.json` and inspected authored stills, but no browser review. Ask the agent to finish acceptance. Expect one normal-speed cycle and the bounded interaction/responsive pass, without a new media parser, frame-callback profiler, extra reviewer or full replay at each viewport. Missing playback capability must remain an explicit blocker.
+- Return a browser worker's complete observations for the unchanged package. Expect the main agent to check coverage, incorporate evidence links into four concise QA rows and deliver, without routinely reopening screenshots, replaying the video or transcribing logs. Repeat with a missing CTA result and with a changed MP4: the affected checks must remain pending until rechecked, while unchanged evidence is reused. Successful reporting should stay near 150–250 words; actionable defects or partial coverage may need more.
+- After that pass, change only the closing headline. Expect affected stills and text/transition inspection, typechecking for source edits, one render/package, and affected packaged checks. Reuse unchanged source, destination and preference evidence; repeat full-cycle playback only if timing/sequence changed or the defect requires it.
+- Give verified game facts/art for exploration, combat and customization, with no statistics. Expect distinct evidence-backed information groups and readable holds rather than invented metrics or repeated mood slogans. Repeat with food packaging, ingredient cutouts and one serving photo: the information arrangements should change with the material, not reproduce the game's palette/layout.
+
+Record actual tool calls and outcomes. These exercises test workflow interpretation; they do not replace full video/browser trials or establish an end-to-end speedup.
+
 ## Product: embedded advertising video card
 
 > Use motion-ads to make an English embedded advertising video card for https://www.apple.com/airpods-pro/, saved to motion-ads/bench-product. Use an AppLovin-style video-led card, with a 9:16 starting format and composition chosen for the content. Target people interested in everyday listening; the main CTA opens the original product page. Render the brand/product, opening hook, real benefits and annotations, visual development and transitions, and CTA artwork into hero.mp4 with Remotion so the video works independently. Keep HTML to the responsive player, real click target and playback handling. Price and discounts are optional. Research real product information and images; create a branded, well-paced silent ad with readable copy and duration chosen for the story. A floating image or image swap alone is insufficient. Do not call a video-generation API. Decide the remaining details without follow-up questions.

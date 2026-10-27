@@ -48,6 +48,28 @@ Useful for a clean technology/object ad, but minimalism still needs meaningful d
 
 Adapt: product photograph/cutout, part positions, annotation paths, detail crop, type rhythm, palette, copy and hold duration. Preserve coherent image edges and room around the CTA. The illustrative SVG is code-local so the reference runs offline after dependency installation; real product images belong in `public/` and use `Img` + `staticFile`.
 
+## Turn source material into information
+
+Choose a visual arrangement from what the source can prove. These are alternative techniques, not a checklist to fit into every ad:
+
+| Available evidence | Information arrangement | Motion and reading hold |
+|---|---|---|
+| Several distinct environments or use cases | One prominent image with short grouped rows, or coordinated image cells with labels | Establish the image, reveal rows in order, hold the group; move to a new composition when the subject changes |
+| A visible part, ingredient or construction detail | Subject-led callouts or a magnified inset with nearby explanation | Reveal the detail before drawing its leader/label; stop the label while it is read |
+| Two related features or substantiated quantities | Paired cards: a short heading/value, unit if needed, and a readable explanation | Stagger the cards without constantly counting or bouncing; keep their comparison visible together |
+| Product use, preparation or a supported progression | A short sequence of concrete actions/images | Let each step change the evidence, not merely the headline; finish with the resulting use context |
+| A final decision or benefit summary | Brief synthesis plus a small group of tags and the action | Clear obsolete detail, settle the summary, keep the closing hold proportionate to its information |
+
+A number is useful only when its meaning, unit and necessary qualifier are sourced and legible. Feature headings can fill the same card layout when no meaningful number exists. Never invent statistics to make a composition look richer.
+
+**Game story example:** official world screenshots become an exploration image plus location rows; combat art accompanies a mechanics group; a sourced customization feature gets its own detail beat; the close resolves to the store. Select the supported beats that matter to this game. This gives the viewer more to understand than repeating atmospheric slogans over different screenshots, without prescribing five scenes or a dark palette.
+
+**Food story example:** recognizable packaging and a taste promise lead to ingredient cutouts with two anchored labels; a large serving photo makes one use occasion concrete; the close combines product and action. Related background colors may change with these beats while type, spacing and CTA stay coherent. Ingredient names or dietary claims need source support; a food photograph alone does not prove them.
+
+**Quiet single-stage example:** keep the subject, headline and CTA anchored; move attention from two part labels to one enlarged detail and finally a compact takeaway group. It can be restrained and informative without full-scene transitions.
+
+Before coding, write the chosen beats in the existing brief as **viewer learns → visual evidence → information arrangement → reveal and hold**. If two beats teach the same thing, combine or shorten them. Give the middle enough time to develop the actual reasons to care; a repeated opener and close should not crowd them out. Review the information-rich hold early, not just the attractive opener.
+
 ## One world, different shots — NOCTURNE
 
 Source: `assets/examples/story/Ad.tsx` and `props.json`.
@@ -56,22 +78,22 @@ Source: `assets/examples/story/Ad.tsx` and `props.json`.
 node <skill-root>/scripts/project.mjs init <out> --example story
 ```
 
-18 seconds, four unequal beats. Deep ink/teal, bone serif headlines, brass accents, cut-corner windows, recurring doorway/light, shared brand and CTA form one visual language. Different crops, depth layers, window treatments and information groups create development:
+15 seconds, four unequal beats. Deep ink/teal, bone serif headlines, brass accents, cut-corner windows, recurring doorway/light, shared brand and CTA form one visual language. The source demonstrates three different information arrangements instead of repeating a label list in every shot:
 
 | Time | Story function | Composition and motion |
 |---|---|---|
-| 0–3.5s | Establish an intriguing world | Tall environmental illustration, subtle parallax, large lower headline |
-| 3.5–8.5s | Show what to explore | A rising reveal enters a framed scene; two rows build after the image settles |
-| 8.5–13s | Bring a detail into focus | An iris follows the recurring light; enlarged detail, coordinated lines/type and explanatory rows |
-| 13–18s | Resolve to a next step | The same frame/type system supports closing copy; a final iris returns to the opening world |
+| 0–2.5s | Establish an intriguing world | Tall environmental illustration, subtle parallax, large lower headline |
+| 2.5–7s | Show what to explore | A rising reveal enters a framed scene; short rows build after the image settles |
+| 7–12s | Explain visual cues | An iris reveals an enlarged beacon; paired heading/explanation cards distinguish landmark and path |
+| 12–15s | Resolve to a next step | A short synthesis and compact tags lead to the persistent action; an iris returns to the opening world |
 
 The useful lesson from an immersive game ad such as Hollow Knight is **stable art direction plus new evidence per beat**: atmospheric opening → distinct environments/experience → meaningful feature/detail → clear action. A common frame, typography, contrast treatment and recurring motif can unify screenshots with different colors. Use supplied/official art for the real game, preserve important subjects/UI, source all features/numbers, and describe still-image animation honestly. The fixture's vector scenery is not gameplay.
 
-The composition draws outgoing and incoming shots together during each transition, with the incoming shot masked as a whole. Its text age is measured from the transition's start, so it does not restart on the first hold frame. The CTA remains above that transition. Apply those mechanics as needed rather than copying every mask or prolonging a simple product story to 18 seconds.
+The composition draws outgoing and incoming artwork through a mask while handing text visibility from one shot to the next. Text age is measured from the transition's start, so it does not restart on the first hold frame; the CTA stays above the transition. The paired cards use the study's `details` entries (`heading`, `body`), while exploration rows and closing tags use `labels`. Adapt these mechanics and fields to the brief rather than copying every mask or extending a simple story to the example's duration.
 
 ## Run and inspect
 
-Both examples are authored at 720×1280 and 30fps: 12 seconds for single-stage and 18 seconds for story. Same-aspect resolution scaling is supported; changing aspect ratio requires recomposition, and changing duration requires retiming the authored frame constants and `qaFrames`.
+Both examples are authored at 720×1280 and 30fps: 12 seconds for single-stage and 15 seconds for story. Same-aspect resolution scaling is supported; changing aspect ratio requires recomposition, and changing duration requires retiming the authored frame constants and `qaFrames`.
 
 Both examples use the existing scaffold, dependencies, `Hero` composition ID, renderer and HTML CTA region. No new runtime library is needed. Install in `<out>/hero-video/`, then follow [staged inspection, rendering and final packaged-page QA](hero-video.md#render-and-inspect); packaging includes the structural/media checks.
 

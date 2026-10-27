@@ -9,6 +9,7 @@ import {
   readFileSync,
   readdirSync,
   realpathSync,
+  renameSync,
   rmSync,
   statSync,
   writeFileSync,
@@ -251,6 +252,9 @@ async function media(project) {
       }
       console.log(`Rendered ${selected.length} QA stills in ${((Date.now() - started) / 1000).toFixed(1)}s with one bundle/browser.`);
     }
+    console.log("Current inspection frames (other retained stills may be stale):");
+    for (const frame of selected)
+      console.log(`${(frame / 30).toFixed(2)}s: ${join(project, `qa/hero-${frame}.jpg`)}`);
   } else {
     still(0, join(project, "poster.jpg"));
     invoke([
@@ -487,14 +491,36 @@ function publish(project) {
   verify(project);
   const files = check(project);
   const destination = join(project, "dist");
-  rmSync(destination, { recursive: true, force: true });
-  mkdirSync(destination);
-  for (const file of files) {
-    const target = join(destination, file);
-    mkdirSync(dirname(target), { recursive: true });
-    cpSync(join(project, file), target);
+  const staging = mkdtempSync(join(project, ".dist-stage-"));
+  const next = join(staging, "next");
+  const previous = join(staging, "previous");
+  let preserveBackup = false;
+  try {
+    mkdirSync(next);
+    for (const file of files) {
+      const target = join(next, file);
+      mkdirSync(dirname(target), { recursive: true });
+      cpSync(join(project, file), target, { dereference: true });
+    }
+    check(next);
+    if (existsSync(destination)) {
+      renameSync(destination, previous);
+      preserveBackup = true;
+    }
+    try {
+      renameSync(next, destination);
+    } catch (error) {
+      if (preserveBackup) {
+        renameSync(previous, destination);
+        preserveBackup = false;
+      }
+      throw error;
+    }
+    preserveBackup = false;
+  } finally {
+    // Retain the previous delivery if restoring it also fails.
+    if (!preserveBackup) rmSync(staging, { recursive: true, force: true });
   }
-  check(destination);
   console.log(
     `Packaged ${files.length} files in ${destination}. Media verified; browser and creative review remain separate. Run a final browser smoke check on this folder before delivery.`,
   );
