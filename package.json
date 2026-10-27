@@ -1,0 +1,13 @@
+{
+  "name": "motion-ads-skill",
+  "private": true,
+  "description": "Source and Agent Skills Discovery artifacts for the motion-ads skill",
+  "scripts": {
+    "build": "node tools/build-well-known.mjs",
+    "check": "node tools/build-well-known.mjs --check",
+    "test": "node --test skills/motion-ads/scripts/"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

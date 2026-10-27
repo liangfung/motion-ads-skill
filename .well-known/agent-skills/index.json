@@ -1,0 +1,12 @@
+{
+  "$schema": "https://schemas.agentskills.io/discovery/0.2.0/schema.json",
+  "skills": [
+    {
+      "name": "motion-ads",
+      "type": "archive",
+      "description": "Use when the user wants an embedded advertising video card, product landing page, interactive promo, ad end-card, or Steam game promotion from a product URL, game link, brief, or supplied assets.",
+      "url": "motion-ads.tar.gz",
+      "digest": "sha256:09ba5078bef4a1b233a4cf48184b81e6f5f4e74a8c8a51d8d2bed8fbcce42700"
+    }
+  ]
+}
