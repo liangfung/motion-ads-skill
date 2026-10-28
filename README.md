@@ -1,6 +1,6 @@
 # motion-ads-skill
 
-Agent skill for animated promotional H5 experiences using real React, Remotion and Remotion Player. Generation needs file tools and a browser worker; Node/npm and video encoding are not prerequisites. Includes a prebuilt local browser runtime and two original unbranded reference studies.
+Agent skill for animated promotional H5 experiences using real React, Remotion and Remotion Player. Generation needs file tools and a browser worker; Node/npm and video encoding are not prerequisites. Includes a prebuilt local browser runtime and three original unbranded reference studies: one stable stage, an object-led sequence and an atmospheric world.
 
 | Path | Purpose |
 |---|---|
@@ -20,10 +20,13 @@ Use Node 20.19+ to install the locked development dependencies and prepare distr
 
 ```sh
 npm ci
+npm run hooks:install
 npm test
 npm run build
 npm run check
 ```
+
+Install the pre-commit hook once per clone with `npm run hooks:install`. It rebuilds and stages `.well-known/agent-skills/index.json` and the archives before each commit. Stage or stash all changes under `skills/` and to `tools/build-well-known.mjs` first; the hook rejects unstaged/untracked inputs, including ignored files, so archives match committed sources. Keep private/local files outside `skills/`. Installation does not change Git config or overwrite a different existing hook; integrate `.githooks/pre-commit` manually if one exists. Runtime/example source changes still require `npm run build` before committing.
 
 The runtime pins React/React DOM and all Remotion packages, preserves dependency notices and records a hash/version file. Changes to maintainer source require regenerating runtime/examples and the archive. Commit generated artifacts alongside sources when publishing. Helper/runtime tests do not prove real-browser visual acceptance.
 

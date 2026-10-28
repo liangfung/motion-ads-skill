@@ -36,10 +36,10 @@
       ]
     },
     {
-      "eyebrow": "KEEP THE STORY MOVING",
-      "headline": "Let curiosity\nlead the way.",
-      "body": "See how the illustrated world comes together.",
-      "labels": ["Original artwork", "Motion guide"]
+      "eyebrow": "YOUR NEXT CHAPTER",
+      "headline": "Choose a path.\nMake it yours.",
+      "body": "Take the first step.",
+      "labels": ["Notice", "Explore", "Begin"]
     }
   ],
   "qaFrames": [0, 50, 66, 100, 160, 201, 240, 315, 351, 400, 440, 449],

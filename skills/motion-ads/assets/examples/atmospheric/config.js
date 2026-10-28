@@ -37,12 +37,13 @@ window.motionAd = {
       ]
     },
     {
-      "eyebrow": "KEEP THE STORY MOVING",
-      "headline": "Let curiosity\nlead the way.",
-      "body": "See how the illustrated world comes together.",
+      "eyebrow": "YOUR NEXT CHAPTER",
+      "headline": "Choose a path.\nMake it yours.",
+      "body": "Take the first step.",
       "labels": [
-        "Original artwork",
-        "Motion guide"
+        "Notice",
+        "Explore",
+        "Begin"
       ]
     }
   ],

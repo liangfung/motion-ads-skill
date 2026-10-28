@@ -69,7 +69,7 @@ outputs.set(
     2,
   ) + "\n",
 );
-for (const name of ["default", "bright", "atmospheric"]) {
+for (const name of ["default", "bright", "atmospheric", "single-stage"]) {
   const file =
     name === "default"
       ? join(source, "default")
@@ -129,5 +129,5 @@ else
   console.log(
     checking
       ? "Browser runtime and reference files are up to date."
-      : "Prepared browser runtime and two complete references.",
+      : "Prepared browser runtime and complete references.",
   );

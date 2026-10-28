@@ -15,7 +15,7 @@ Generation edits ordinary files. React, React DOM, Remotion and `@remotion/playe
 | `dist/runtime-version.json`, `THIRD-PARTY-NOTICES.txt` | Runtime version/hash metadata and dependency notices; retain both |
 | `brief.json`, `research/`, `qa/` | Working facts, assets and review evidence outside the delivery |
 
-Initialize once with `bash <skill-root>/scripts/project.sh init <out>`; `--example bright` or `--example atmospheric` copies one complete study. The helper refuses existing output and removes its own incomplete initialization on failure. Continue existing work in place.
+Initialize once with `bash <skill-root>/scripts/project.sh init <out>`; `--example single-stage`, `--example bright` or `--example atmospheric` copies one complete study. Choose the relevant [reference](examples.md) without loading all implementations. The helper refuses existing output and removes its own incomplete initialization on failure. Continue existing work in place.
 
 If the host cannot invoke a shell script, create a new `<out>/dist/assets/`, copy the four files from `assets/player-template/` into `dist/`, copy `assets/runtime/motion-runtime.js` there as `runtime.js`, retain the runtime version/notices files under the names above, and create the brief outside `dist/`. Inspect an existing directory before writing; never overwrite unrelated work. Copy a study's `ad.js`/`config.js` pair when useful.
 
@@ -65,7 +65,7 @@ H5 is not automatically smaller/faster than MP4. Budget selected image dimension
 
 Choose faces using the [material-led typography guidance](design-guidelines.md#typography-and-color). Fetch only the styles/subsets needed for comparison, then retain the selected files and their licenses in `dist/assets/fonts/`. Prefer existing WOFF2 downloads; [Fontsource](https://fontsource.org/docs/getting-started/cdn) provides versioned direct font URLs without a package install. Download resources during authoring and use local URLs in the H5. Use a supported supplied format when appropriate rather than adding a conversion toolchain.
 
-Set `--font-display` and `--font-text` once in `styles.css`; the starter and both studies bind their display copy and reading/action text to these roles. `--display-weight` and `--display-tracking` control primary headline emphasis. Unset roles preserve each composition's defaults. The example below shows one static display face and a system reading stack; replace the filename/families with the selected treatment:
+Set `--font-display` and `--font-text` once in `styles.css`; the starter and all studies bind their display copy and reading/action text to these roles. `--display-weight` and `--display-tracking` control primary headline emphasis. Unset roles preserve each composition's defaults. The example below shows one static display face and a system reading stack; replace the filename/families with the selected treatment:
 
 ```css
 @font-face {

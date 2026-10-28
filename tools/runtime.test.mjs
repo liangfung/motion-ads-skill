@@ -15,10 +15,10 @@ test("a ready runtime and shell-only project helper ship with the skill", () => 
   assert.ok(existsSync(helper), "expected a shell-only project helper");
 });
 
-test("new projects and both complete examples need no project build or installer", (t) => {
+test("new projects and complete examples need no project build or installer", (t) => {
   const temp = mkdtempSync(join(tmpdir(), "motion-prebuilt-test-"));
   t.after(() => rmSync(temp, { recursive: true, force: true }));
-  for (const example of ["bright", "atmospheric"]) {
+  for (const example of ["bright", "atmospheric", "single-stage"]) {
     const out = join(temp, example);
     const init = spawnSync(
       "/bin/bash",
@@ -108,8 +108,8 @@ const exampleConfig = (name) => {
   dom.window.close();
   return props;
 };
-test("the standalone runtime exposes real Remotion and renders both editable references", async (t) => {
-  for (const name of ["bright", "atmospheric"]) {
+test("the standalone runtime exposes real Remotion and renders the editable references", async (t) => {
+  for (const name of ["bright", "atmospheric", "single-stage"]) {
     const { dom, errors } = page(t, exampleConfig(name), "?frame=100");
     assert.equal(
       typeof dom.window.MotionAds.Remotion.useCurrentFrame,
@@ -194,7 +194,7 @@ test("initialization, checks and edits work inside a virtual shell with no Node"
   const shell = new Bash({ files, cwd: "/workspace" });
   assert.notEqual((await shell.exec("node --version")).exitCode, 0);
   const initialized = await shell.exec(
-    "bash /skills/motion-ads/scripts/project.sh init /workspace/study --example bright",
+    "bash /skills/motion-ads/scripts/project.sh init /workspace/study --example single-stage",
   );
   assert.equal(initialized.exitCode, 0, initialized.stderr);
   const checked = await shell.exec(
@@ -423,14 +423,14 @@ test("playback waits for pending fonts and marks successful loading", async (t) 
   assert.equal(stage.dataset.fonts, "ready");
 });
 
-test("both studies apply configured theme roles inside the composition", async (t) => {
+test("all studies apply configured theme roles inside the composition", async (t) => {
   const theme = {
     bg: "#123456",
     surface: "#234567",
     text: "#eeeeee",
     accent: "#abcdef",
   };
-  for (const name of ["bright", "atmospheric"]) {
+  for (const name of ["bright", "atmospheric", "single-stage"]) {
     const { dom } = page(t, { ...exampleConfig(name), ...theme }, "?frame=160");
     dom.window.eval(
       readFileSync(join(skill, "assets/examples", name, "ad.js"), "utf8"),
@@ -452,8 +452,9 @@ test("both studies apply configured theme roles inside the composition", async (
 });
 
 test("the starter has one page heading and actions stay outside hidden visuals", async (t) => {
-  for (const dir of ["player-template", "examples/bright", "examples/atmospheric"]) {
-    const { dom } = page(t, exampleConfig("bright"), "?frame=100");
+  for (const dir of ["player-template", "examples/bright", "examples/atmospheric", "examples/single-stage"]) {
+    const name = dir === "player-template" ? "bright" : dir.slice("examples/".length);
+    const { dom } = page(t, exampleConfig(name), "?frame=100");
     dom.window.eval(readFileSync(join(skill, "assets", dir, "ad.js"), "utf8"));
     await delay(100);
     assert.equal(dom.window.document.querySelectorAll("h1").length, 1);
@@ -470,7 +471,7 @@ test("the starter has one page heading and actions stay outside hidden visuals",
 });
 
 test("editable published references contain no compiler purity annotations", () => {
-  for (const dir of ["player-template", "examples/bright", "examples/atmospheric"])
+  for (const dir of ["player-template", "examples/bright", "examples/atmospheric", "examples/single-stage"])
     assert.equal(
       readFileSync(join(skill, "assets", dir, "ad.js"), "utf8").includes("@__PURE__"),
       false,
@@ -504,9 +505,10 @@ test("all compositions expose shared typography roles without losing study fallb
     ["player-template", "Arial, sans-serif", "Arial, sans-serif"],
     ["examples/bright", "Arial, Helvetica, sans-serif", "Arial, Helvetica, sans-serif"],
     ["examples/atmospheric", "Arial, sans-serif", "Georgia, serif"],
+    ["examples/single-stage", "Arial, sans-serif", "Georgia, serif"],
   ]) {
-    const name = dir === "examples/atmospheric" ? "atmospheric" : "bright";
-    const { dom, errors } = page(t, exampleConfig(name), "?frame=265");
+    const name = dir === "player-template" ? "bright" : dir.slice("examples/".length);
+    const { dom, errors } = page(t, exampleConfig(name), name === "single-stage" ? "?frame=120" : "?frame=265");
     dom.window.eval(readFileSync(join(skill, "assets", dir, "ad.js"), "utf8"));
     await delay(100);
     const stage = dom.window.document.querySelector("#motion-stage");
@@ -524,4 +526,57 @@ test("all compositions expose shared typography roles without losing study fallb
     assert.ok(headline.style.letterSpacing.startsWith("var(--display-tracking,"));
     assert.equal(errors.length, 0, errors.map(String).join("\n"));
   }
+});
+
+test("single-stage aligns two views of one subject while local information changes on a fixed stage", async (t) => {
+  const props = exampleConfig("single-stage");
+  const total = props.fps * props.durationSeconds;
+  const frames = [0, 1, 60, 120, 180, total - 2, total - 1];
+  const shots = [];
+  for (const frame of frames) {
+    const { dom, errors } = page(t, props, `?frame=${frame}`);
+    dom.window.eval(readFileSync(join(skill, "assets/examples/single-stage/ad.js"), "utf8"));
+    await delay(100);
+    const stage = dom.window.document.querySelector("#motion-stage");
+    assert.equal(stage.dataset.state, "paused");
+    const headline = [...stage.querySelectorAll("[style]")].find(
+      ({ style }) => style.fontWeight.startsWith("var(--display-weight,"),
+    );
+    const inside = stage.querySelector('svg[aria-label="Unwrapped botanical blend"]');
+    const outside = stage.querySelector('svg[aria-label="Wrapped botanical pouch"]');
+    assert.ok(inside && outside, "two representations of the same subject are present");
+    assert.equal(inside.parentElement.style.cssText, outside.parentElement.style.cssText, "both views share the same position, size and motion");
+    const masks = [inside, outside].map((view) => view.parentElement.parentElement.style.clipPath);
+    const plane = stage.querySelector('a[href="#details"]').parentElement;
+    const localValues = props.scenes[0].details.flatMap(({ heading, body }) => [heading, body]);
+    const active = [...plane.querySelectorAll("div")].filter((node) => {
+      if (node.children.length || !localValues.includes(node.textContent)) return false;
+      let alpha = 1;
+      for (let n = node; n && n !== plane.parentElement; n = n.parentElement)
+        if (n.style.opacity !== "") alpha *= Number(n.style.opacity);
+      return alpha > 0.01;
+    }).map((node) => node.textContent);
+    for (const key of ["heading", "body"])
+      assert.ok(active.filter((value) => props.scenes[0].details.some((detail) => detail[key] === value)).length <= 1, "each information slot hands over without competing text");
+    assert.deepEqual(errors, []);
+    shots.push({
+      copy: headline.outerHTML,
+      action: stage.querySelector('a[href="#details"]').outerHTML,
+      motion: inside.parentElement.style.transform,
+      masks,
+      active,
+    });
+  }
+  for (const shot of shots) {
+    assert.equal(shot.copy, shots[0].copy, "headline stays readable in the same place");
+    assert.equal(shot.action, shots[0].action, "action stays in the same place");
+    assert.deepEqual(shot.masks, shots[0].masks, "the split stays fixed while the subject moves");
+  }
+  assert.ok(shots[0].masks.every(Boolean) && shots[0].masks[0] !== shots[0].masks[1], "the views occupy complementary regions");
+  assert.notEqual(shots[2].motion, shots[0].motion, "the subject actually moves across the split");
+  assert.ok(new Set(shots.flatMap(({ active }) => active)).size >= 6, "local information develops through three pairs");
+  const numbers = (value) => value.match(/-?\d+(?:\.\d+)?(?:e[+-]?\d+)?/g).map(Number);
+  const first = numbers(shots[0].motion), second = numbers(shots[1].motion), last = numbers(shots.at(-1).motion);
+  assert.equal(first.length, last.length);
+  first.forEach((value, i) => assert.ok(Math.abs((value - last[i]) - (second[i] - value)) < 0.1, "loop displacement follows normal movement instead of resetting"));
 });

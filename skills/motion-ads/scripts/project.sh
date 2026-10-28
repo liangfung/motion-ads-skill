@@ -4,16 +4,17 @@ set -eu
 skill_root=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 mode=${1:-}
 out=${2:-}
-if [ -z "$out" ]; then printf '%s\n' 'Usage: bash <skill>/scripts/project.sh init|check <out> [--example bright|atmospheric]' >&2; exit 1; fi
+if [ -z "$out" ]; then printf '%s\n' 'Usage: bash <skill>/scripts/project.sh init|check <out> [--example single-stage|bright|atmospheric]' >&2; exit 1; fi
 if [ "$mode" = init ]; then
     example=
     if [ "$#" -gt 2 ]; then
-      if [ "$#" -ne 4 ]; then printf '%s\n' '--example requires bright or atmospheric.' >&2; exit 1; fi
-      if [ "$3" != '--example' ]; then printf '%s\n' 'Use --example bright or atmospheric.' >&2; exit 1; fi
+      if [ "$#" -ne 4 ]; then printf '%s\n' '--example requires single-stage, bright or atmospheric.' >&2; exit 1; fi
+      if [ "$3" != '--example' ]; then printf '%s\n' 'Use --example single-stage, bright or atmospheric.' >&2; exit 1; fi
       example=$4
-      if [ "$example" != bright ]; then
-        if [ "$example" != atmospheric ]; then printf '%s\n' '--example must be bright or atmospheric.' >&2; exit 1; fi
-      fi
+      case "$example" in
+        single-stage|bright|atmospheric) ;;
+        *) printf '%s\n' '--example must be single-stage, bright or atmospheric.' >&2; exit 1 ;;
+      esac
     fi
     if [ -e "$out" ]; then printf '%s\n' 'Project already exists; edit its files in place.' >&2; exit 1; fi
     mkdir -p -- "$(dirname -- "$out")"

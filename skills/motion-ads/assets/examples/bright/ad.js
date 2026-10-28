@@ -7,7 +7,8 @@ const {
   spring,
   useCurrentFrame,
   useVideoConfig,
-  Easing
+  Easing,
+  interpolate
 } = MotionAds.Remotion;
 const clamp = (n) => Math.max(0, Math.min(1, n));
 const Vessel = ({
@@ -69,12 +70,14 @@ const Ad = (props) => {
   );
   const index = starts.reduce((a, s, i) => frame >= s ? i : a, 0), next = (index + 1) % 4;
   const end = next === 0 ? durationInFrames : starts[next], transition = Math.min(
-    Math.round(fps * 0.5),
+    Math.round(fps * 0.8),
     Math.floor(durationInFrames * 0.07)
   );
-  const p = Easing.inOut(Easing.cubic)(
-    clamp((frame - end + transition) / transition)
-  );
+  const progress = clamp((frame - end + transition) / transition);
+  const p = Easing.inOut(Easing.cubic)(progress);
+  const visibleIndex = progress < 0.5 ? index : next;
+  const band = index === 0 || index === 3;
+  const sweepX = interpolate(progress, [0, 0.5, 1], [-1300, -170, 1e3]);
   const rise = (age, delay = 0) => clamp(
     spring({
       frame: Math.max(0, age - delay),
@@ -351,7 +354,21 @@ const Ad = (props) => {
           }
         },
         scene.body
-      ))
+      )),
+      h(
+        "div",
+        {
+          style: {
+            position: "absolute",
+            bottom: 25,
+            width: 720,
+            textAlign: "center",
+            fontSize: 22,
+            letterSpacing: 2
+          }
+        },
+        "ORIGINAL VECTOR STUDY"
+      )
     );
   };
   return h(
@@ -374,8 +391,33 @@ const Ad = (props) => {
           transformOrigin: "top left"
         }
       },
-      render(index),
-      p > 0 && h(AbsoluteFill, { style: { clipPath: `inset(0 ${(1 - p) * 100}% 0 0)` } }, render(next)),
+      render(band ? visibleIndex : index),
+      progress > 0 && (band ? (
+        // A wide band hides the cut and carries the same momentum into the loop.
+        h(
+          AbsoluteFill,
+          {
+            "aria-hidden": "true",
+            style: {
+              width: 1050,
+              background: RED,
+              transform: `translateX(${sweepX}px) skewX(-12deg)`,
+              transformOrigin: "center",
+              pointerEvents: "none",
+              zIndex: 1
+            }
+          }
+        )
+      ) : h(
+        AbsoluteFill,
+        {
+          style: {
+            // Build the product row upward, then gather attention around the hero.
+            clipPath: index === 1 ? `inset(${(1 - p) * 100}% 0 0 0)` : `circle(${p * 900}px at 360px 700px)`
+          }
+        },
+        render(next)
+      )),
       h(
         "a",
         {
@@ -396,26 +438,12 @@ const Ad = (props) => {
             color: PAPER,
             fontSize: 33,
             fontWeight: 700,
-            textDecoration: "none"
+            textDecoration: "none",
+            zIndex: 2
           }
         },
         props.ctaLabel,
         h("span", { "aria-hidden": "true" }, "\u2197")
-      ),
-      h(
-        "div",
-        {
-          style: {
-            position: "absolute",
-            bottom: 25,
-            width: 720,
-            textAlign: "center",
-            fontSize: 22,
-            color: index === 2 ? PAPER : INK,
-            letterSpacing: 2
-          }
-        },
-        "ORIGINAL VECTOR STUDY"
       )
     )
   );

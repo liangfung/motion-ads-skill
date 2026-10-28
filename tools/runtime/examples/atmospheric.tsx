@@ -181,7 +181,7 @@ export const Ad = (props: AdProps) => {
     if (!scene) throw new Error("Story example needs four scenes");
     const age = i === 0 ? 99 : frame - STARTS[i] + TRANSITION;
     const e = entrance(age);
-    // Hand copy over once; artwork can continue moving through the whole mask.
+    // Hand copy over once while the imagery dissolves, avoiding competing headlines.
     const copyOpacity =
       p === 0 ? 1 : i === index ? 1 - clamp(p * 2) : clamp((p - 0.5) * 2);
     const line = (text: string, j: number) => {
@@ -200,7 +200,7 @@ export const Ad = (props: AdProps) => {
       );
     };
     return (
-      <AbsoluteFill aria-hidden="true" style={{ background: INK }}>
+      <AbsoluteFill aria-hidden="true" style={{ background: i === 3 ? surface : INK }}>
         {i === 0 ? (
           <>
             <div
@@ -220,6 +220,51 @@ export const Ad = (props: AdProps) => {
               }}
             />
           </>
+        ) : i === 3 ? (
+          // The closing route summarizes the journey without repeating the landscape or cards.
+          <svg
+            viewBox="0 0 608 490"
+            width="608"
+            height="490"
+            style={{ position: "absolute", left: 56, top: 465 }}
+          >
+            <path
+              d="M90 70C90 166 500 118 500 222S184 280 184 374Q184 450 304 470"
+              fill="none"
+              stroke={GOLD}
+              strokeWidth="22"
+              opacity=".08"
+            />
+            <path
+              d="M90 70C90 166 500 118 500 222S184 280 184 374Q184 450 304 470"
+              fill="none"
+              stroke={GOLD}
+              strokeWidth="2.5"
+              pathLength="1"
+              strokeDasharray="1"
+              strokeDashoffset={1 - clamp(entrance(age, 6))}
+            />
+            {[
+              { x: 90, y: 70, labelX: 134, anchor: "start" },
+              { x: 500, y: 222, labelX: 456, anchor: "end" },
+              { x: 184, y: 374, labelX: 228, anchor: "start" },
+            ].map(({ x, y, labelX, anchor }, j) => (
+              <g key={j} opacity={clamp(entrance(age, 10 + j * 8))}>
+                <circle cx={x} cy={y} r="18" fill="none" stroke={GOLD} opacity=".35" />
+                <circle cx={x} cy={y} r="6" fill={GOLD} />
+                <text
+                  x={labelX}
+                  y={y + 12}
+                  textAnchor={anchor as "start" | "end"}
+                  fill={BONE}
+                  style={{ fontFamily: "var(--font-display, Georgia, serif)", fontSize: 40 }}
+                >
+                  {scene.labels?.[j]}
+                </text>
+              </g>
+            ))}
+            <path d="M304 458l10 12-10 12-10-12Z" fill={GOLD} opacity={clamp(entrance(age, 34))} />
+          </svg>
         ) : (
           <>
             <div
@@ -228,7 +273,7 @@ export const Ad = (props: AdProps) => {
                 left: 56,
                 right: 56,
                 top: 414,
-                height: i === 3 ? 335 : 346,
+                height: 346,
                 clipPath:
                   "polygon(22px 0,100% 0,100% calc(100% - 22px),calc(100% - 22px) 100%,0 100%,0 22px)",
                 borderTop: `1px solid ${LIGHT}88`,
@@ -287,6 +332,7 @@ export const Ad = (props: AdProps) => {
             top: i === 0 ? 776 : 192,
             width: 608,
             opacity: copyOpacity,
+            textAlign: i === 3 ? "center" : undefined,
           }}
         >
           <div
@@ -304,7 +350,7 @@ export const Ad = (props: AdProps) => {
             style={{
               fontFamily: "var(--font-display, Georgia, serif)",
               fontWeight: "var(--display-weight, 400)",
-              fontSize: i === 0 ? 75 : 69,
+              fontSize: i === 0 ? 75 : i === 3 ? 82 : 69,
               lineHeight: 1.03,
               letterSpacing: "var(--display-tracking, -.035em)",
               color: BONE,
@@ -393,43 +439,27 @@ export const Ad = (props: AdProps) => {
             })}
           </div>
         )}
-        {/* Close: a short synthesis and compact tags leave the action prominent. */}
+        {/* Close: a short invitation follows the route and leads towards the persistent action. */}
         {i === 3 && (
           <div
             style={{
               position: "absolute",
               left: 56,
-              top: 805,
+              top: 984,
               width: 608,
               opacity: copyOpacity,
+              textAlign: "center",
             }}
           >
             <div
               style={{
                 color: BONE,
-                fontSize: 34,
+                fontSize: 29,
                 lineHeight: 1.3,
-                marginBottom: 28,
                 opacity: clamp(entrance(age, 15)),
               }}
             >
               {scene.body}
-            </div>
-            <div style={{ display: "flex", gap: 16 }}>
-              {(scene.labels ?? []).map((label, j) => (
-                <div
-                  key={label}
-                  style={{
-                    padding: "12px 18px",
-                    border: `1px solid ${LIGHT}66`,
-                    color: LIGHT,
-                    fontSize: 28,
-                    opacity: clamp(entrance(age, 24 + j * 8)),
-                  }}
-                >
-                  {label}
-                </div>
-              ))}
             </div>
           </div>
         )}
@@ -460,11 +490,7 @@ export const Ad = (props: AdProps) => {
       </AbsoluteFill>
     );
   };
-  // Composite outgoing/incoming shots; the final iris returns to the opening world.
-  const iris = next === 0 || next === 2;
-  const clip = iris
-    ? `circle(${p * 1550}px at 360px 565px)`
-    : `inset(${(1 - p) * 1280}px 0 0 0)`;
+  // Keep the lower scene opaque; fading the upper scene avoids a dark midpoint.
   return (
     <AbsoluteFill
       style={{
@@ -482,26 +508,9 @@ export const Ad = (props: AdProps) => {
           transformOrigin: "top left",
         }}
       >
-        <AbsoluteFill
-          style={{ filter: p ? `brightness(${1 - p * 0.18})` : undefined }}
-        >
-          {render(index)}
-        </AbsoluteFill>
+        <AbsoluteFill>{render(index)}</AbsoluteFill>
         {p > 0 && (
-          <AbsoluteFill style={{ clipPath: clip }}>{render(next)}</AbsoluteFill>
-        )}
-        {!iris && p > 0 && (
-          <div
-            style={{
-              position: "absolute",
-              left: 0,
-              top: (1 - p) * 1280,
-              width: 720,
-              height: 2,
-              background: GOLD,
-              opacity: Math.sin(p * Math.PI),
-            }}
-          />
+          <AbsoluteFill style={{ opacity: p }}>{render(next)}</AbsoluteFill>
         )}
         <a
           href={ctaHref}

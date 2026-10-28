@@ -1,0 +1,12 @@
+#!/bin/sh
+set -eu
+cd "$(git rev-parse --show-toplevel)"
+
+if ! git diff --quiet -- skills/ tools/build-well-known.mjs ||
+   [ -n "$(git ls-files --others -- skills/ tools/build-well-known.mjs)" ]; then
+  echo "Stage, stash or remove unstaged/untracked skill sources (including ignored files) and the well-known builder before committing." >&2
+  exit 1
+fi
+
+node tools/build-well-known.mjs
+git add -- .well-known/agent-skills/index.json .well-known/agent-skills/*.tar.gz

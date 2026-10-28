@@ -1,0 +1,54 @@
+// Edit these inputs from the source brief. Paths are relative to index.html.
+window.motionAd = {
+  "title": "One blend, two perspectives",
+  "description": "An original botanical pouch study. The same subject moves across a fixed split: one side reveals illustrated leaves, flowers and citrus, while the other shows its wrapper. Paired information changes locally; the background, headline and action stay stable. This invented illustration is not a real product, ingredient claim or offer.",
+  "brand": "BOTANICAL\nSTUDY",
+  "ctaLabel": "Explore the study",
+  "ctaHref": "#details",
+  "width": 720,
+  "height": 1280,
+  "fps": 30,
+  "durationSeconds": 8,
+  "bg": "#f6f0e4",
+  "surface": "#234b3b",
+  "accent": "#e3cd51",
+  "text": "#203b30",
+  "qaFrames": [
+    0,
+    60,
+    74,
+    80,
+    120,
+    154,
+    160,
+    180,
+    234,
+    239
+  ],
+  "scenes": [
+    {
+      "eyebrow": "INSIDE / OUTSIDE",
+      "headline": "A closer\nlook.",
+      "body": "One blend.\nTwo perspectives.",
+      "labels": [
+        "THE BLEND",
+        "THE POUCH"
+      ],
+      "details": [
+        {
+          "heading": "Leaf & flower",
+          "body": "A folded top"
+        },
+        {
+          "heading": "Citrus slices",
+          "body": "A paper sleeve"
+        },
+        {
+          "heading": "The whole blend",
+          "body": "One neat pouch"
+        }
+      ]
+    }
+  ],
+  "assets": []
+};

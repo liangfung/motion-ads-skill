@@ -5,7 +5,8 @@
   "scripts": {
     "build": "node tools/build-runtime.mjs && node tools/build-well-known.mjs",
     "check": "node tools/build-runtime.mjs --check && node tools/build-well-known.mjs --check",
-    "test": "node --test tools/runtime.test.mjs"
+    "hooks:install": "node tools/install-hooks.mjs",
+    "test": "node --test tools/*.test.mjs"
   },
   "engines": {
     "node": ">=20.19"

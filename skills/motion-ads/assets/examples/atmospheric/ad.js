@@ -173,7 +173,7 @@ const Ad = (props) => {
         text
       ));
     };
-    return h(AbsoluteFill, { "aria-hidden": "true", style: { background: INK } }, i === 0 ? h(React.Fragment, null, h(
+    return h(AbsoluteFill, { "aria-hidden": "true", style: { background: i === 3 ? surface : INK } }, i === 0 ? h(React.Fragment, null, h(
       "div",
       {
         style: {
@@ -192,7 +192,56 @@ const Ad = (props) => {
           background: `linear-gradient(180deg, transparent 46%, ${INK} 74%)`
         }
       }
-    )) : h(React.Fragment, null, h(
+    )) : i === 3 ? (
+      // The closing route summarizes the journey without repeating the landscape or cards.
+      h(
+        "svg",
+        {
+          viewBox: "0 0 608 490",
+          width: "608",
+          height: "490",
+          style: { position: "absolute", left: 56, top: 465 }
+        },
+        h(
+          "path",
+          {
+            d: "M90 70C90 166 500 118 500 222S184 280 184 374Q184 450 304 470",
+            fill: "none",
+            stroke: GOLD,
+            strokeWidth: "22",
+            opacity: ".08"
+          }
+        ),
+        h(
+          "path",
+          {
+            d: "M90 70C90 166 500 118 500 222S184 280 184 374Q184 450 304 470",
+            fill: "none",
+            stroke: GOLD,
+            strokeWidth: "2.5",
+            pathLength: "1",
+            strokeDasharray: "1",
+            strokeDashoffset: 1 - clamp(entrance(age, 6))
+          }
+        ),
+        [
+          { x: 90, y: 70, labelX: 134, anchor: "start" },
+          { x: 500, y: 222, labelX: 456, anchor: "end" },
+          { x: 184, y: 374, labelX: 228, anchor: "start" }
+        ].map(({ x, y, labelX, anchor }, j) => h("g", { key: j, opacity: clamp(entrance(age, 10 + j * 8)) }, h("circle", { cx: x, cy: y, r: "18", fill: "none", stroke: GOLD, opacity: ".35" }), h("circle", { cx: x, cy: y, r: "6", fill: GOLD }), h(
+          "text",
+          {
+            x: labelX,
+            y: y + 12,
+            textAnchor: anchor,
+            fill: BONE,
+            style: { fontFamily: "var(--font-display, Georgia, serif)", fontSize: 40 }
+          },
+          scene.labels?.[j]
+        ))),
+        h("path", { d: "M304 458l10 12-10 12-10-12Z", fill: GOLD, opacity: clamp(entrance(age, 34)) })
+      )
+    ) : h(React.Fragment, null, h(
       "div",
       {
         style: {
@@ -200,7 +249,7 @@ const Ad = (props) => {
           left: 56,
           right: 56,
           top: 414,
-          height: i === 3 ? 335 : 346,
+          height: 346,
           clipPath: "polygon(22px 0,100% 0,100% calc(100% - 22px),calc(100% - 22px) 100%,0 100%,0 22px)",
           borderTop: `1px solid ${LIGHT}88`,
           opacity: e,
@@ -266,7 +315,8 @@ const Ad = (props) => {
           left: 56,
           top: i === 0 ? 776 : 192,
           width: 608,
-          opacity: copyOpacity
+          opacity: copyOpacity,
+          textAlign: i === 3 ? "center" : void 0
         }
       },
       h(
@@ -288,7 +338,7 @@ const Ad = (props) => {
           style: {
             fontFamily: "var(--font-display, Georgia, serif)",
             fontWeight: "var(--display-weight, 400)",
-            fontSize: i === 0 ? 75 : 69,
+            fontSize: i === 0 ? 75 : i === 3 ? 82 : 69,
             lineHeight: 1.03,
             letterSpacing: "var(--display-tracking, -.035em)",
             color: BONE
@@ -380,9 +430,10 @@ const Ad = (props) => {
         style: {
           position: "absolute",
           left: 56,
-          top: 805,
+          top: 984,
           width: 608,
-          opacity: copyOpacity
+          opacity: copyOpacity,
+          textAlign: "center"
         }
       },
       h(
@@ -390,28 +441,13 @@ const Ad = (props) => {
         {
           style: {
             color: BONE,
-            fontSize: 34,
+            fontSize: 29,
             lineHeight: 1.3,
-            marginBottom: 28,
             opacity: clamp(entrance(age, 15))
           }
         },
         scene.body
-      ),
-      h("div", { style: { display: "flex", gap: 16 } }, (scene.labels ?? []).map((label, j) => h(
-        "div",
-        {
-          key: label,
-          style: {
-            padding: "12px 18px",
-            border: `1px solid ${LIGHT}66`,
-            color: LIGHT,
-            fontSize: 28,
-            opacity: clamp(entrance(age, 24 + j * 8))
-          }
-        },
-        label
-      )))
+      )
     ), h(
       "div",
       {
@@ -441,8 +477,6 @@ const Ad = (props) => {
       h("span", { style: { color: GOLD } }, "\u25C7")
     ));
   };
-  const iris = next === 0 || next === 2;
-  const clip = iris ? `circle(${p * 1550}px at 360px 565px)` : `inset(${(1 - p) * 1280}px 0 0 0)`;
   return h(
     AbsoluteFill,
     {
@@ -463,28 +497,8 @@ const Ad = (props) => {
           transformOrigin: "top left"
         }
       },
-      h(
-        AbsoluteFill,
-        {
-          style: { filter: p ? `brightness(${1 - p * 0.18})` : void 0 }
-        },
-        render(index)
-      ),
-      p > 0 && h(AbsoluteFill, { style: { clipPath: clip } }, render(next)),
-      !iris && p > 0 && h(
-        "div",
-        {
-          style: {
-            position: "absolute",
-            left: 0,
-            top: (1 - p) * 1280,
-            width: 720,
-            height: 2,
-            background: GOLD,
-            opacity: Math.sin(p * Math.PI)
-          }
-        }
-      ),
+      h(AbsoluteFill, null, render(index)),
+      p > 0 && h(AbsoluteFill, { style: { opacity: p } }, render(next)),
       h(
         "a",
         {

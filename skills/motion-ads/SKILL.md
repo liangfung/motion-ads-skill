@@ -23,7 +23,7 @@ Choose `<out>` (default `motion-ads/<subject-slug>/`) and initialize a new proje
 
 ```sh
 bash <skill-root>/scripts/project.sh init <out>
-# Optional complete reference: --example bright or --example atmospheric
+# Optional complete reference: --example single-stage, bright or atmospheric
 ```
 
 Continue existing projects in place. If script invocation is unavailable, use the equivalent [file copies](references/player-h5.md#project-and-runtime); no runtime installation is needed. If initial lookup is needed to choose the output path, keep it in shared scratch space outside `<out>` until initialization.
@@ -36,7 +36,7 @@ Use [question-guide.md](references/question-guide.md). Ask only when the answer 
 
 ## 3. Establish the visual story
 
-Read [design-guidelines.md](references/design-guidelines.md) and [examples.md](references/examples.md). Inspect the matching complete `ad.js` and `config.js`: **bright** teaches object scale, grouped details and color changes; **atmospheric** teaches world continuity, scene transitions, ordered rows and paired cards. They are original, unbranded studies of techniques, not looks to reskin or fixed styles for product categories.
+Read [design-guidelines.md](references/design-guidelines.md) and the [example guide](references/examples.md); inspect only the relevant complete `ad.js` and `config.js`, rather than loading every implementation. **Examples guide design reasoning and implementation; they do not define the allowed outcomes.** Let the actual product, selected material, audience and message determine the presentation. The original, unbranded **single-stage** study teaches a fixed background with flexible arrangements of a subject, supporting elements and changing information; its package/content split is only one composition. **Bright** teaches scale, grouping and color changes; **atmospheric** teaches world continuity, information rows and paired cards. Borrow, combine or depart from these techniques; no study, look, scene count, beat order or transition sequence is required.
 
 Keep a compact visual contract in the brief: persuasive idea, asset roles, palette/type rationale, spacing/image treatment and what each beat teaches. Judge colors from the selected material together. Use the [font selection and loading guidance](references/player-h5.md#fonts) and compare 2–3 plausible type treatments in the opener and dense hold during one early browser checkpoint. Batch corrections before extending the story.
 

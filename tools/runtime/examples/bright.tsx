@@ -6,6 +6,7 @@ import {
   useCurrentFrame,
   useVideoConfig,
   Easing,
+  interpolate,
 } from "remotion";
 import type { AdProps } from "../types";
 const clamp = (n: number) => Math.max(0, Math.min(1, n));
@@ -77,12 +78,15 @@ export const Ad = (props: AdProps) => {
     next = (index + 1) % 4;
   const end = next === 0 ? durationInFrames : starts[next],
     transition = Math.min(
-      Math.round(fps * 0.5),
+      Math.round(fps * 0.8),
       Math.floor(durationInFrames * 0.07),
     );
-  const p = Easing.inOut(Easing.cubic)(
-    clamp((frame - end + transition) / transition),
-  );
+  const progress = clamp((frame - end + transition) / transition);
+  const p = Easing.inOut(Easing.cubic)(progress);
+  const visibleIndex = progress < 0.5 ? index : next;
+  // Keep the diagonal sweep's direction when returning to the opener.
+  const band = index === 0 || index === 3;
+  const sweepX = interpolate(progress, [0, 0.5, 1], [-1300, -170, 1000]);
   const rise = (age: number, delay = 0) =>
     clamp(
       spring({
@@ -355,6 +359,18 @@ export const Ad = (props: AdProps) => {
             </div>
           </>
         )}
+        <div
+          style={{
+            position: "absolute",
+            bottom: 25,
+            width: 720,
+            textAlign: "center",
+            fontSize: 22,
+            letterSpacing: 2,
+          }}
+        >
+          ORIGINAL VECTOR STUDY
+        </div>
       </AbsoluteFill>
     );
   };
@@ -375,12 +391,32 @@ export const Ad = (props: AdProps) => {
           transformOrigin: "top left",
         }}
       >
-        {render(index)}
-        {p > 0 && (
-          <AbsoluteFill style={{ clipPath: `inset(0 ${(1 - p) * 100}% 0 0)` }}>
+        {render(band ? visibleIndex : index)}
+        {progress > 0 && (band ? (
+          // A wide band hides the cut and carries the same momentum into the loop.
+          <AbsoluteFill
+            aria-hidden="true"
+            style={{
+              width: 1050,
+              background: RED,
+              transform: `translateX(${sweepX}px) skewX(-12deg)`,
+              transformOrigin: "center",
+              pointerEvents: "none",
+              zIndex: 1,
+            }}
+          />
+        ) : (
+          <AbsoluteFill
+            style={{
+              // Build the product row upward, then gather attention around the hero.
+              clipPath: index === 1
+                ? `inset(${(1 - p) * 100}% 0 0 0)`
+                : `circle(${p * 900}px at 360px 700px)`,
+            }}
+          >
             {render(next)}
           </AbsoluteFill>
-        )}
+        ))}
         <a
           href={props.ctaHref}
           style={{
@@ -400,24 +436,12 @@ export const Ad = (props: AdProps) => {
             fontSize: 33,
             fontWeight: 700,
             textDecoration: "none",
+            zIndex: 2,
           }}
         >
           {props.ctaLabel}
           <span aria-hidden="true">↗</span>
         </a>
-        <div
-          style={{
-            position: "absolute",
-            bottom: 25,
-            width: 720,
-            textAlign: "center",
-            fontSize: 22,
-            color: index === 2 ? PAPER : INK,
-            letterSpacing: 2,
-          }}
-        >
-          ORIGINAL VECTOR STUDY
-        </div>
       </div>
     </AbsoluteFill>
   );
