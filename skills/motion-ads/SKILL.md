@@ -1,68 +1,61 @@
 ---
 name: motion-ads
-description: Use when the user wants an embedded advertising video card, product landing page, interactive promo, ad end-card, or Steam game promotion from a product URL, game link, brief, or supplied assets.
+description: Use when the user wants an animated promotional H5 page, embedded motion advertisement, product story, interactive campaign, or game promotion from a URL, brief, or supplied assets.
 ---
 
 # Motion Ads
 
-Create an advertisement whose brand/product, hook, sourced benefits or annotations, visual sequence, transitions and CTA artwork are rendered into the MP4. A complete result includes local video and poster, a working HTML experience, and inspected output.
+Create a compelling H5 using React components, Remotion animation and the real `@remotion/player`. The skill includes a ready browser runtime. Generation requires no Node/npm, JSX/TSX compiler, dependency installation, video render or encoding. Deliver local HTML, JavaScript, CSS and selected assets. Do not substitute a handwritten Canvas engine or MP4 wrapper for this Player experience.
 
-Choose the surface:
-- **Video card:** a complete ad video with thin responsive HTML for playback, a real CTA link and reduced-motion handling.
-- **Landing page:** a deliberately designed HTML experience plus a complete narrative ad video.
+User direction and the material determine the identity. The page can be compact or include useful surrounding HTML; no card/landing classification is required. Keep playback silent and transport controls hidden unless requested. Strong animation needs a recognizable subject, useful information, readable holds, a coherent sequence and a real action.
 
-User direction and brand identity take precedence over presets. Derive the design from the selected material. Keep player controls/progress hidden and playback silent unless requested. A floating image or screenshot montage alone does not develop a complete advertisement.
+## Roles and paths
 
-## Capabilities
+The main agent needs file reading/writing and ordinary file commands. It owns the brief, design, editable source and delivery. Prefer a browser-capable subagent for source research, image inspection, an early visual checkpoint and final acceptance. Reuse that worker/session when supported; batch related work rather than creating a worker for each image/check. Use the main browser when delegation is unavailable.
 
-Use file reading/writing and image inspection, commands that can download/run Node and Remotion, and a browser with the [research and QA capabilities](references/hero-video.md#browser-tool-capabilities). Map these capabilities to the host agent's available tools; no specific tool names or delegation API are required. Ask unresolved questions through the available clarification tool or directly in the conversation. Track long-running jobs through completion.
+In a shared filesystem, pass canonical absolute paths and exchange assets, source notes and review evidence there. No project copy or artifact upload is needed between agents. The browser worker opens the H5 and observes it; running the page's JavaScript is normal browser behavior, not a separate build task. Its shell access is unnecessary. Follow the host's delegation/connection instructions and track started jobs through completion.
 
-Resolve `<skill-root>` to the directory containing this loaded `SKILL.md`; resolve its references, scripts and assets from there, independently of the workspace or current directory. Browser work can run directly or through an available browser worker. When delegating, pass the relevant source/artifact paths, checks and user constraints; use absolute skill-resource paths when they are needed. Use existing browser infrastructure; the render helper blocks Chrome downloads. Image generation, audio tools, additional skills and system FFmpeg are optional rather than prerequisites.
+Resolve `<skill-root>` from this loaded `SKILL.md`, independently of the current directory. Image generation and audio tools are optional. Read [player-h5.md](references/player-h5.md) for runtime APIs, file operations and bounded review.
 
-## 1. Research and record
+## 1. Research the source
 
-Read [source-analysis.md](references/source-analysis.md). Inspect the real product/game source, exact variant and candidate assets; view the images before choosing them. Keep sourced claims and qualifiers, preserve intentional CTA query parameters, and omit unsupported price/offers/reviews. With Steam stills, describe the result as screenshot/artwork animation rather than gameplay footage.
+Choose `<out>` (default `motion-ads/<subject-slug>/`) and initialize a new project before any worker writes under it:
 
-Gather facts, asset provenance and assumptions for a lightweight `brief.json`. For a new project, keep preliminary notes/files outside the output directory until initialization; then update the scaffold's brief. Use [working-file roles](references/source-analysis.md#working-files) to separate research, render inputs, QA and publication resources.
+```sh
+bash <skill-root>/scripts/project.sh init <out>
+# Optional complete reference: --example bright or --example atmospheric
+```
+
+Continue existing projects in place. If script invocation is unavailable, use the equivalent [file copies](references/player-h5.md#project-and-runtime); no runtime installation is needed. If initial lookup is needed to choose the output path, keep it in shared scratch space outside `<out>` until initialization.
+
+Read [source-analysis.md](references/source-analysis.md). Give the browser worker the source URL, intended outcome and shared research path. Incorporate its sourced facts, qualifiers, asset provenance, visual observations, actual destination and assumptions into `brief.json`. Stop when the planned information has suitable evidence. Do not invent offers, numbers, gameplay or results.
 
 ## 2. Resolve material choices
 
-Read [question-guide.md](references/question-guide.md) before asking. Clarify only choices that materially affect the product story, audience, destination, direction or output. Distinguish a card from a landing page when “ad page” is ambiguous. Skip supplied or delegated decisions and optional offer fields. An explicitly delegated format can start with a card, the source URL as CTA, brand-derived styling and silent playback.
+Use [question-guide.md](references/question-guide.md). Ask only when the answer materially changes audience, message, destination, visual direction, placement or interaction. When the user delegates decisions, choose a sensible canvas, page flow and concise loop from the material and proceed.
 
 ## 3. Establish the visual story
 
-Read [design-guidelines.md](references/design-guidelines.md) and the matching [motion structure](references/examples.md): a stable **single-stage** layout with directed local changes, or a **story** with different compositions inside one coherent theme. For a story or feature-rich card, inspect the matching runnable composition before authoring; learn its timing and attention mechanisms without inheriting its look. Both structures can fit one embedded card. Consult [style presets](references/style-presets.md) or [page patterns](references/page-patterns.md) only when useful.
+Read [design-guidelines.md](references/design-guidelines.md) and [examples.md](references/examples.md). Inspect the matching complete `ad.js` and `config.js`: **bright** teaches object scale, grouped details and color changes; **atmospheric** teaches world continuity, scene transitions, ordered rows and paired cards. They are original, unbranded studies of techniques, not looks to reskin or fixed styles for product categories.
 
-In the brief, record one persuasive idea, selected asset roles, palette/type/grid/image-treatment constants, and what each beat teaches through visual evidence and motion. Choose an [information arrangement](references/examples.md#turn-source-material-into-information) that makes those facts understandable: a detail callout, grouped benefits, comparison or use sequence. Include entrances, readable holds, transitions and a closing action. Judge theme colors after viewing selected material together; give a short [palette rationale](references/design-guidelines.md#choose-color-from-the-material). Ask about materially different unresolved directions, otherwise decide and proceed.
+Keep a compact visual contract in the brief: persuasive idea, asset roles, palette/type rationale, spacing/image treatment and what each beat teaches. Judge colors from the selected material together. Use the [font selection and loading guidance](references/player-h5.md#fonts) and compare 2–3 plausible type treatments in the opener and dense hold during one early browser checkpoint. Batch corrections before extending the story.
 
-Even with a short prompt, compare [type and complete composition](references/design-guidelines.md#typography-and-color) in an opener and a representative information-rich beat before extending the sequence. Resolve the strongest design weakness early. Vary the information and composition while preserving the chosen visual identity. Duration follows the story, not the HTML page length.
+## 4. Author directly in the delivery
 
-## 4. Build and render
+Edit `<out>/dist/config.js`, `ad.js`, `styles.css` and `index.html`; selected runtime resources go in `dist/assets/`. Write plain JavaScript React components with `React.createElement` (or its local `h` alias), real Remotion APIs and `MotionAds.mount`. No JSX/TSX, bare npm imports, CommonJS `require`, or remote runtime dependencies. Keep the supplied runtime unchanged. Style, timing, scene structure and interactions remain freely programmable.
 
-Follow [hero-video.md](references/hero-video.md) for setup, props, render commands and browser requirements. Resolve `<out>` to the project root, not its `hero-video/` subdirectory.
+The edited H5 is already the delivery. Refresh the same page to see changes; no compile/package step or second output copy is needed. Add surrounding HTML when it helps understanding/action; the motion must itself communicate a useful argument.
 
-```sh
-node <skill-root>/scripts/project.mjs init <out> --layout card
-# Or: --layout landing, --example single-stage, --example story
-```
-
-Initialize once the mode is known, before writing under `<out>`; edit existing initialized projects in place. Default output is `motion-ads/<product-slug>/` unless specified. Install the scaffold's pinned dependencies in `hero-video/`, configure props and customize `src/Ad.tsx`. Replace scaffold copy/artwork and assign meaningful image roles.
-
-For a card, align the real HTML link with the [video CTA artwork](references/hero-video.md#cta-artwork-and-real-link). Keep the checker IDs `hero-video` and `cta`. Use selective stills for early design and corrections, then inspect authored holds/transitions and the loop before the full render; custom timing needs matching `qaFrames`. See the [staged workflow](references/hero-video.md#render-and-inspect). The final MP4 must tell the story independently of HTML copy.
-
-## 5. Verify and improve
-
-Review source/variant/claims and exact CTA, then render and package. Packaging already performs structural and encoded-media checks; separate `check` or `verify` calls are useful for diagnosis, not a required duplicate chain.
+## 5. Check once and review selectively
 
 ```sh
-node <skill-root>/scripts/project.mjs render <out>
-node <skill-root>/scripts/project.mjs package <out>
+bash <skill-root>/scripts/project.sh check <out>
 ```
 
-Use the [bounded browser pass](references/hero-video.md#browser-acceptance) for playback/interaction and [creative review](references/design-guidelines.md#self-critique-before-delivery). It combines one normal-speed cycle with responsive and interaction checks; media parsing is already covered by packaging. Inspect through the [supported local-artifact preview](references/hero-video.md#open-the-local-artifact). A poster or successful navigation does not establish playback or pacing. Give that pass one reviewer; when delegated, the main agent checks coverage and resolves findings rather than routinely reviewing the same screenshots again. Fix findings and [repeat only affected checks](references/hero-video.md#recheck-only-what-changed). Stop when those checks pass and no material creative issue remains. Keep one concise [QA report](references/hero-video.md#review-evidence); mark unavailable checks honestly.
+This only checks required files and known scaffold inputs. Browser startup catches config/JavaScript/loading problems; the runtime's validation does not establish facts or appearance. Use one browser reviewer for the [combined pass](references/player-h5.md#browser-acceptance): loading/errors, one normal-speed cycle through wrap, actual action/focus, initial/live reduced motion and a representative second viewport. Reuse early inspected holds and record only new findings.
+
+The main agent checks artifact identity and coverage rather than replaying it or routinely rereading screenshots. Fix blocking loading, factual, interaction, legibility and continuity issues; batch changes and recheck affected states. Timing/sequence changes need a new cycle. Keep one short [QA record](references/player-h5.md#review-evidence); unavailable capability stays blocked/partial. Record optional polish instead of opening another full design round.
 
 ## 6. Deliver
 
-Deliver the whole `dist/` folder after review and retain the working project for edits. Failed media verification preserves an existing delivery; packaging alone does not approve browser behavior or design. Do not publish or add tracking unless requested.
-
-Report the output path, chosen story/style/mode/CTA, source assumptions, and separate verification results or blockers. For a slow run, distinguish setup/user waits from authoring, rendering and QA time. Completion includes a narrative local MP4/poster and inspected browser output; identify partial results precisely. Public hosting and sharing are separate outcomes.
+Deliver the whole reviewed `dist/` folder, which also contains the editable source. Keep `brief.json`, research and QA outside it. Report the path, design/story decisions, material source assumptions and verification outcome or blockers. Retain dependency notices and link the [runtime licensing note](references/player-h5.md#runtime-licensing) when handing off for publication or commercial use. Do not publish or add tracking unless requested. If a video file is explicitly requested, plan it as a separate export; it is not part of default H5 acceptance.

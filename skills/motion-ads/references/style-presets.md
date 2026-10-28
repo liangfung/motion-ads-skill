@@ -6,13 +6,13 @@ Presets are **starting points**, not requirements. Use them to avoid a blank-pag
 2. The product's own brand (colors, logo mood, tone), interpreted alongside the selected product/packaging and photographic material.
 3. A preset chosen for the audience/category; ask only when the visual decision materially needs clarification.
 
-Derive a coherent direction, not just a palette swap. Change composition, type scale, framing, surfaces, and choreography when the subject calls for it. Apply the direction to the rendered narrative video, not only HTML. The starter is a baseline, not the required layout.
+Derive a coherent direction, not just a palette swap. Change composition, type scale, framing, surfaces, and choreography when the subject calls for it. Apply the direction to the Player narrative, not only HTML. The starter is a baseline, not the required layout.
 
 Apply [material-led color selection](design-guidelines.md#choose-color-from-the-material) before using a preset's tokens. Clean light can be right for premium technology; dark tech is not the default for every electronic product. Replace preset colors when they fight the actual images. Keep the chosen type, palette roles, imagery treatment and framing consistent across the sequence. Presets do not require extra decoration, a second skill, or a design-system search.
 
 ## Token structure
 
-For landing HTML, set tokens on `:root` or the page wrapper. Translate the same color/type roles into Remotion props and composition styles; changing CSS alone does not change the MP4. In a card, the video carries the visual identity and HTML stays thin.
+Set page tokens on `:root` or a wrapper and coordinate them with Remotion props/composition styles. Player and surrounding HTML should share visual roles. CSS outside a fixed-canvas composition does not automatically recompose its content.
 
 | Token | Meaning |
 |-------|---------|
@@ -134,4 +134,4 @@ Horror, fantasy, sports, and other genres should derive their own direction from
 - Harmonize the palette with the actual image. Adapt radius, type, layout and motion as a coherent direction instead of preserving a preset by habit.
 - Check all text/background pairs, including muted text on surfaces and CTA states. Bold pop and Soft playful use dark text on their warm accents; white is not automatically accessible. Adjust text color, surface or accent treatment as needed after brand changes.
 - Expand font choices into real stacks and include CJK fallbacks for Chinese pages. No remote font request is required.
-- Inspect rendered video type at its displayed size and during transitions. A coherent palette cannot compensate for unreadable holds or an image sequence with no persuasive development.
+- Inspect Player typography at its displayed size and during transitions. A coherent palette cannot compensate for unreadable holds or an image sequence with no persuasive development.

@@ -1,0 +1,45 @@
+// Edit these inputs from the source brief. Paths are relative to index.html.
+window.motionAd = {
+  "title": "Product name",
+  "description": "Replace with a source-backed description.",
+  "brand": "Product name",
+  "ctaLabel": "Learn more",
+  "ctaHref": "https://example.com",
+  "width": 720,
+  "height": 1280,
+  "fps": 30,
+  "durationSeconds": 12,
+  "bg": "#f1eddf",
+  "surface": "#fffaf1",
+  "accent": "#174b47",
+  "text": "#172626",
+  "qaFrames": [
+    0,
+    45,
+    110,
+    180,
+    280,
+    350,
+    359
+  ],
+  "scenes": [
+    {
+      "eyebrow": "INTRODUCTION",
+      "headline": "One clear reason to care.",
+      "body": "Replace with a source-backed description."
+    },
+    {
+      "eyebrow": "LOOK CLOSER",
+      "headline": "Useful detail",
+      "labels": [
+        "Verified feature"
+      ]
+    },
+    {
+      "eyebrow": "THE NEXT STEP",
+      "headline": "A clear invitation.",
+      "body": "Replace with a source-backed description."
+    }
+  ],
+  "assets": []
+};

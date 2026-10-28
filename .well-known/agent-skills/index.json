@@ -4,9 +4,9 @@
     {
       "name": "motion-ads",
       "type": "archive",
-      "description": "Use when the user wants an embedded advertising video card, product landing page, interactive promo, ad end-card, or Steam game promotion from a product URL, game link, brief, or supplied assets.",
+      "description": "Use when the user wants an animated promotional H5 page, embedded motion advertisement, product story, interactive campaign, or game promotion from a URL, brief, or supplied assets.",
       "url": "motion-ads.tar.gz",
-      "digest": "sha256:09ba5078bef4a1b233a4cf48184b81e6f5f4e74a8c8a51d8d2bed8fbcce42700"
+      "digest": "sha256:2829a4df1d2af94f61c176123eefceb345fafd7ce7bfa2feb0b1fa03859780d1"
     }
   ]
 }

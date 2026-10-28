@@ -1,5 +1,4 @@
-// Motion study: 720x1280, 30fps, 15s. Same-aspect resolution scaling is supported.
-// Retiming requires changing the frame constants and props.qaFrames; other aspect ratios need recomposition.
+// Original vector-world study; reuse its information and attention mechanisms.
 import {
   AbsoluteFill,
   Easing,
@@ -7,7 +6,7 @@ import {
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
-import type { HeroProps } from "./Hero";
+import type { AdProps } from "../types";
 
 export type AdScene = {
   eyebrow: string;
@@ -17,18 +16,23 @@ export type AdScene = {
   labels?: string[];
   details?: { heading: string; body: string }[];
 };
-const INK = "#091b25",
-  BONE = "#eee8d7",
-  LIGHT = "#a5d8cf",
-  GOLD = "#d5b881";
+const LIGHT = "#a5d8cf";
 const clamp = (n: number) => Math.max(0, Math.min(1, n));
 const ease = Easing.inOut(Easing.cubic);
 // Authored shot boundaries in frames; transitions begin before each boundary.
-const STARTS = [0, 75, 210, 360],
-  TRANSITION = 18;
+const TRANSITION = 18;
 
 // Original vector world. Replace with verified artwork for a real campaign.
-const World = ({ frame, variant = 0 }: { frame: number; variant?: number }) => {
+const World = ({
+  frame,
+  colors,
+  variant = 0,
+}: {
+  frame: number;
+  colors: Pick<AdProps, "bg" | "accent" | "text">;
+  variant?: number;
+}) => {
+  const { bg: INK, text: BONE, accent: GOLD } = colors;
   const drift = Math.sin((frame / 450) * Math.PI * 2) * 9;
   return (
     <svg
@@ -144,13 +148,23 @@ const World = ({ frame, variant = 0 }: { frame: number; variant?: number }) => {
   );
 };
 
-export const Ad = ({
-  brand = "NOCTURNE",
-  ctaLabel = "View the motion guide",
-  scenes = [],
-}: HeroProps) => {
+export const Ad = (props: AdProps) => {
+  // Config controls the theme; world lighting and secondary tints remain artwork choices.
+  const {
+    brand = "ILLUSTRATED JOURNEY",
+    ctaLabel = "Explore the study",
+    ctaHref,
+    scenes = [],
+    bg: INK,
+    text: BONE,
+    accent: GOLD,
+    surface,
+  } = props;
   const frame = useCurrentFrame();
   const { fps, durationInFrames, width, height } = useVideoConfig();
+  const STARTS = [0, 1 / 6, 7 / 15, 0.8].map((n) =>
+    Math.round(n * durationInFrames),
+  );
   const index = STARTS.reduce((n, start, i) => (frame >= start ? i : n), 0);
   const next = (index + 1) % STARTS.length;
   const boundary = next === 0 ? durationInFrames : STARTS[next];
@@ -168,9 +182,8 @@ export const Ad = ({
     const age = i === 0 ? 99 : frame - STARTS[i] + TRANSITION;
     const e = entrance(age);
     // Hand copy over once; artwork can continue moving through the whole mask.
-    const copyOpacity = p === 0
-      ? 1
-      : i === index ? 1 - clamp(p * 2) : clamp((p - 0.5) * 2);
+    const copyOpacity =
+      p === 0 ? 1 : i === index ? 1 - clamp(p * 2) : clamp((p - 0.5) * 2);
     const line = (text: string, j: number) => {
       const r = entrance(age, 4 + j * 7);
       return (
@@ -187,7 +200,7 @@ export const Ad = ({
       );
     };
     return (
-      <AbsoluteFill style={{ background: INK }}>
+      <AbsoluteFill aria-hidden="true" style={{ background: INK }}>
         {i === 0 ? (
           <>
             <div
@@ -199,11 +212,11 @@ export const Ad = ({
                 height: 935,
               }}
             >
-              <World frame={frame} />
+              <World frame={frame} colors={props} />
             </div>
             <AbsoluteFill
               style={{
-                background: `linear-gradient(180deg, ${INK}00 46%, ${INK} 74%)`,
+                background: `linear-gradient(180deg, transparent 46%, ${INK} 74%)`,
               }}
             />
           </>
@@ -230,7 +243,11 @@ export const Ad = ({
                   transform: `scale(${1.02 + clamp(age / 140) * 0.07})`,
                 }}
               >
-                <World frame={frame + i * 13} variant={i === 1 ? 1 : 0} />
+                <World
+                  frame={frame + i * 13}
+                  colors={props}
+                  variant={i === 1 ? 1 : 0}
+                />
               </div>
               <AbsoluteFill
                 style={{
@@ -285,10 +302,11 @@ export const Ad = ({
           </div>
           <div
             style={{
-              fontFamily: "Georgia, serif",
+              fontFamily: "var(--font-display, Georgia, serif)",
+              fontWeight: "var(--display-weight, 400)",
               fontSize: i === 0 ? 75 : 69,
               lineHeight: 1.03,
-              letterSpacing: "-.035em",
+              letterSpacing: "var(--display-tracking, -.035em)",
               color: BONE,
             }}
           >
@@ -297,7 +315,15 @@ export const Ad = ({
         </div>
         {/* Exploration: readable rows build in order underneath the shared image window. */}
         {i === 1 && (
-          <div style={{ position: "absolute", left: 56, top: 805, width: 608, opacity: copyOpacity }}>
+          <div
+            style={{
+              position: "absolute",
+              left: 56,
+              top: 805,
+              width: 608,
+              opacity: copyOpacity,
+            }}
+          >
             {(scene.labels ?? []).map((label, j) => {
               const r = entrance(age, 18 + j * 12);
               return (
@@ -307,7 +333,7 @@ export const Ad = ({
                     borderLeft: `3px solid ${GOLD}`,
                     marginBottom: 18,
                     padding: "18px 22px",
-                    background: "#b4d9cf0d",
+                    background: surface,
                     color: BONE,
                     fontSize: 28,
                     lineHeight: 1.25,
@@ -324,24 +350,44 @@ export const Ad = ({
         )}
         {/* Detail: paired cards separate the visual cue from its meaning; no invented metrics. */}
         {i === 2 && (
-          <div style={{
-            position: "absolute", left: 56, top: 805, width: 608,
-            display: "flex", gap: 20, color: BONE, opacity: copyOpacity,
-          }}>
+          <div
+            style={{
+              position: "absolute",
+              left: 56,
+              top: 805,
+              width: 608,
+              display: "flex",
+              gap: 20,
+              color: BONE,
+              opacity: copyOpacity,
+            }}
+          >
             {(scene.details ?? []).map(({ heading, body }, j) => {
               const r = entrance(age, 20 + j * 12);
               return (
-                <div key={heading} style={{
-                  flex: 1, minWidth: 0, padding: "24px 22px",
-                  borderTop: `2px solid ${GOLD}`, background: "#b4d9cf12",
-                  opacity: clamp(r), transform: `translateY(${(1 - r) * 24}px)`,
-                }}>
-                  <div style={{ color: GOLD, fontFamily: "Georgia, serif", fontSize: 42, marginBottom: 18 }}>
+                <div
+                  key={heading}
+                  style={{
+                    flex: 1,
+                    minWidth: 0,
+                    padding: "24px 22px",
+                    borderTop: `2px solid ${GOLD}`,
+                    background: surface,
+                    opacity: clamp(r),
+                    transform: `translateY(${(1 - r) * 24}px)`,
+                  }}
+                >
+                  <div
+                    style={{
+                      color: GOLD,
+                      fontFamily: "var(--font-display, Georgia, serif)",
+                      fontSize: 42,
+                      marginBottom: 18,
+                    }}
+                  >
                     {heading}
                   </div>
-                  <div style={{ fontSize: 29, lineHeight: 1.3 }}>
-                    {body}
-                  </div>
+                  <div style={{ fontSize: 29, lineHeight: 1.3 }}>{body}</div>
                 </div>
               );
             })}
@@ -349,16 +395,38 @@ export const Ad = ({
         )}
         {/* Close: a short synthesis and compact tags leave the action prominent. */}
         {i === 3 && (
-          <div style={{ position: "absolute", left: 56, top: 805, width: 608, opacity: copyOpacity }}>
-            <div style={{ color: BONE, fontSize: 34, lineHeight: 1.3, marginBottom: 28, opacity: clamp(entrance(age, 15)) }}>
+          <div
+            style={{
+              position: "absolute",
+              left: 56,
+              top: 805,
+              width: 608,
+              opacity: copyOpacity,
+            }}
+          >
+            <div
+              style={{
+                color: BONE,
+                fontSize: 34,
+                lineHeight: 1.3,
+                marginBottom: 28,
+                opacity: clamp(entrance(age, 15)),
+              }}
+            >
               {scene.body}
             </div>
             <div style={{ display: "flex", gap: 16 }}>
               {(scene.labels ?? []).map((label, j) => (
-                <div key={label} style={{
-                  padding: "12px 18px", border: `1px solid ${LIGHT}66`,
-                  color: LIGHT, fontSize: 28, opacity: clamp(entrance(age, 24 + j * 8)),
-                }}>
+                <div
+                  key={label}
+                  style={{
+                    padding: "12px 18px",
+                    border: `1px solid ${LIGHT}66`,
+                    color: LIGHT,
+                    fontSize: 28,
+                    opacity: clamp(entrance(age, 24 + j * 8)),
+                  }}
+                >
                   {label}
                 </div>
               ))}
@@ -379,7 +447,7 @@ export const Ad = ({
         >
           <span
             style={{
-              fontFamily: "Georgia, serif",
+              fontFamily: "var(--font-display, Georgia, serif)",
               fontSize: 34,
               letterSpacing: ".16em",
             }}
@@ -402,7 +470,7 @@ export const Ad = ({
       style={{
         background: INK,
         overflow: "hidden",
-        fontFamily: "Arial, sans-serif",
+        fontFamily: "var(--font-text, Arial, sans-serif)",
       }}
     >
       <div
@@ -435,8 +503,10 @@ export const Ad = ({
             }}
           />
         )}
-        <div
+        <a
+          href={ctaHref}
           style={{
+            textDecoration: "none",
             position: "absolute",
             left: "8%",
             width: "84%",
@@ -456,8 +526,8 @@ export const Ad = ({
           }}
         >
           {ctaLabel}
-          <span>↗</span>
-        </div>
+          <span aria-hidden="true">↗</span>
+        </a>
         <div
           style={{
             position: "absolute",
@@ -465,7 +535,7 @@ export const Ad = ({
             bottom: 30,
             textAlign: "center",
             color: "#aec3c0",
-            fontSize: 17,
+            fontSize: 22,
             letterSpacing: ".09em",
           }}
         >

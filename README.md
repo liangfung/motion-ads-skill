@@ -1,32 +1,32 @@
 # motion-ads-skill
 
-Agent skill for building embedded advertising video cards and landing pages with Remotion.
-
-## Layout
+Agent skill for animated promotional H5 experiences using real React, Remotion and Remotion Player. Generation needs file tools and a browser worker; Node/npm and video encoding are not prerequisites. Includes a prebuilt local browser runtime and two original unbranded reference studies.
 
 | Path | Purpose |
 |---|---|
-| `skills/motion-ads/` | Skill source (`SKILL.md`, `references/`, `scripts/`, `assets/`) |
-| `evals/` | Maintainer bench prompts; not shipped |
-| `tools/build-well-known.mjs` | Builds the discovery artifacts |
-| `.well-known/agent-skills/` | Generated [Agent Skills Discovery v0.2.0](https://github.com/cloudflare/agent-skills-discovery-rfc) index and archives; do not edit by hand |
+| `skills/motion-ads/` | Distributable instructions, file-only helper, editable templates/examples and ready runtime |
+| `tools/runtime/` | Maintainer source for runtime and reference compositions; not shipped |
+| `tools/build-runtime.mjs` | Reproducible dependency/runtime and plain JS reference preparation |
+| `evals/` | Maintainer prompts and workflow checks; not shipped |
+| `.well-known/agent-skills/` | Generated discovery index/archive |
 
-## Discovery
+## Generation
 
-```
-https://raw.githubusercontent.com/liangfung/motion-ads-skill/main/.well-known/agent-skills/index.json
-```
+Use the loaded skill. Initialization copies the ready runtime and editable HTML/JS/CSS into the project's `dist/`. Main authors and runs file commands; browser worker researches and reviews that same folder. Editing and refreshing replaces compilation. Deliver `dist/`; keep research and QA outside it.
 
-Each skill is a `type: "archive"` `.tar.gz` with `SKILL.md` at its root; the index `url` is relative to the index location.
+## Maintainer publishing
 
-## Publishing
-
-After changing anything under `skills/`, rebuild and commit the generated files together with the source:
+Use Node 20.19+ to install the locked development dependencies and prepare distributable files:
 
 ```sh
-npm run build   # write index.json and archives
-npm run check   # fail if artifacts are stale
-npm test        # helper tests (set REMOTION_TEST_PROJECT for media integration)
+npm ci
+npm test
+npm run build
+npm run check
 ```
 
-Archives are reproducible (sorted entries, fixed owner/mtime), so an unchanged skill keeps the same digest. `*.test.mjs` and `node_modules` are excluded.
+The runtime pins React/React DOM and all Remotion packages, preserves dependency notices and records a hash/version file. Changes to maintainer source require regenerating runtime/examples and the archive. Commit generated artifacts alongside sources when publishing. Helper/runtime tests do not prove real-browser visual acceptance.
+
+Retain dependency notices in distributed H5 folders. For publication or commercial use, see the [runtime licensing note](skills/motion-ads/references/player-h5.md#runtime-licensing) and Remotion's applicable license; the prebuilt runtime does not grant additional usage rights.
+
+The discovery index is available at `https://raw.githubusercontent.com/liangfung/motion-ads-skill/main/.well-known/agent-skills/index.json`. Archives are reproducible, with `SKILL.md` at archive root. `node_modules` and maintainer tests are excluded.

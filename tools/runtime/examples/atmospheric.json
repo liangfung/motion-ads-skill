@@ -1,0 +1,50 @@
+{
+  "brand": "ILLUSTRATED JOURNEY",
+  "ctaLabel": "Explore the study",
+  "bg": "#091b25",
+  "surface": "#142d37",
+  "accent": "#d5b881",
+  "text": "#eee8d7",
+  "width": 720,
+  "height": 1280,
+  "durationSeconds": 15,
+  "scenes": [
+    {
+      "eyebrow": "FOLLOW A LITTLE CURIOSITY",
+      "headline": "A world\nworth finding."
+    },
+    {
+      "eyebrow": "STEP INTO THE UNKNOWN",
+      "headline": "Look beyond\nthe familiar.",
+      "labels": [
+        "Winding paths. Quiet landmarks.",
+        "One world, many perspectives."
+      ]
+    },
+    {
+      "eyebrow": "LOOK A LITTLE CLOSER",
+      "headline": "Small details.\nNew discoveries.",
+      "details": [
+        {
+          "heading": "Beacon",
+          "body": "A landmark to look for."
+        },
+        {
+          "heading": "Path",
+          "body": "A line that leads the eye."
+        }
+      ]
+    },
+    {
+      "eyebrow": "KEEP THE STORY MOVING",
+      "headline": "Let curiosity\nlead the way.",
+      "body": "See how the illustrated world comes together.",
+      "labels": ["Original artwork", "Motion guide"]
+    }
+  ],
+  "qaFrames": [0, 50, 66, 100, 160, 201, 240, 315, 351, 400, 440, 449],
+  "title": "An illustrated journey",
+  "description": "An original vector-world study with a shared atmosphere, scene transitions, ordered information rows and paired detail cards. No real game, character or brand is depicted.",
+  "ctaHref": "#details",
+  "fps": 30
+}

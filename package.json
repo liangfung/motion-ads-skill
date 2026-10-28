@@ -3,11 +3,20 @@
   "private": true,
   "description": "Source and Agent Skills Discovery artifacts for the motion-ads skill",
   "scripts": {
-    "build": "node tools/build-well-known.mjs",
-    "check": "node tools/build-well-known.mjs --check",
-    "test": "node --test skills/motion-ads/scripts/"
+    "build": "node tools/build-runtime.mjs && node tools/build-well-known.mjs",
+    "check": "node tools/build-runtime.mjs --check && node tools/build-well-known.mjs --check",
+    "test": "node --test tools/runtime.test.mjs"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=20.19"
+  },
+  "devDependencies": {
+    "@remotion/player": "4.0.538",
+    "esbuild": "0.25.9",
+    "jsdom": "26.0.0",
+    "just-bash": "3.6.0",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "remotion": "4.0.538"
   }
 }

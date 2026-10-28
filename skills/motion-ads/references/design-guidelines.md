@@ -2,14 +2,13 @@
 
 The advertisement should work as moving communication, not just attractive HTML around an animated image. User direction and brand identity take precedence over templates and presets.
 
-## Choose the surface
+## One deliberate H5 experience
 
-- **Video card:** the MP4 contains the brand/product, hook, supported benefits or annotations, scene sequence, transitions, and CTA artwork. Keep HTML to a responsive player, real CTA anchor, reduced-motion handling, and necessary semantics. Do not add a second HTML headline/benefit stack to compensate for an unfinished video.
-- **Landing page:** design a deliberate desktop/mobile HTML composition and an equally intentional narrative video. Add only sections and interactions that develop the product argument. A landing video can be short or long according to its story; extra HTML does not require extra video seconds.
-- Deliver plain `index.html`, inline CSS/JS, local video/poster, and local assets. No build step or external CDN/font/image/tracker/script request is needed. CTA navigation is expected. Use system fonts or supplied/licensed local fonts; a small locally bundled library is acceptable when it earns its complexity.
-- Set `lang`, meaningful `<title>`, and the viewport meta tag. Respect safe-area insets around pinned controls. The card starter is 9:16; adapt aspect ratio/dimensions when the user or placement specifies them. Do not claim platform certification from a generic wrapper.
+Build a coherent motion-led page with Remotion Player and local runtime assets. Choose its canvas, surrounding HTML and interaction from the placement, subject and information; no mandatory card/landing split is needed. The composition must communicate a useful idea, while normal HTML can supply natural reading flow and responsive supporting sections.
 
-Match the video to its slot and avoid stretching. Preserve important subjects and text across responsive display sizes. A card can sit centered on a wide display; a full landing page should use its desktop space deliberately. On a short phone screen, scale the whole card without cropping its CTA or creating unwanted scrolling.
+Deliver editable HTML/JS/CSS, the supplied runtime and selected local assets. Set language, meaningful title/description and viewport metadata. Use system or supplied/licensed local fonts, and avoid runtime CDN/font/image/tracker requests. CTA navigation is expected. Viewer-side building is unnecessary. Respect safe areas and supplied dimensions; a generic H5 is not platform certification.
+
+Preserve the subject and action across display sizes. Fixed-canvas artwork scales rather than automatically reflowing; recompose an unsuitable aspect ratio and keep long reading content in natural HTML. A compact portrait stage can be centered on a wide screen. Avoid accidental scrolling on a short viewport and use desktop space deliberately when surrounding content is useful.
 
 ## Persuasive and temporal hierarchy
 
@@ -19,7 +18,7 @@ Choose who should click, why they should care, and what happens next before addi
 - Arrange time as **entrance → readable hold → exit/transition**. Budget reading time after text has settled. Dense text needs more hold or less copy; making every scene equally long is only a scaffold.
 - A transition should explain a relationship: matching a product's position into its detail, revealing a UI feature, moving between game environments, or resolving benefit copy into an action. Cuts, wipes, masks, dissolves and camera moves are all available; choose for the subject.
 - Keep product, text and annotation movement coordinated. For example, reveal a detail before its label, then let both rest while read. Do not move every layer continuously.
-- Make the first frame a useful poster with product identity and a legible idea. Make the ending resolve the argument and provide a clear next action. Inspect the wrap when looping; a reset should feel coherent.
+- Make the opening and reduced-motion still useful, with subject identity and a legible idea. Make the ending resolve the argument and provide a clear next action. Inspect the wrap when looping; a reset should feel coherent.
 - Use only sourced price, reviews, awards, compatibility, deadlines and testimonials. Preserve important qualifiers in rendered copy; omit a claim rather than shrinking its conditions into unreadable text.
 
 The same product can support different styles: calm editorial cuts and large serif statements, crisp technical detail callouts, playful poster typography, or immersive game-world reveals. More floating shapes, rings or glow are not a substitute for choosing the right sequence.
@@ -42,25 +41,27 @@ Keep background family, typography, grid, CTA geometry and imagery treatment coh
 
 Review selected assets together before animating. A packshot, warm lifestyle photo and technical diagram may all be accurate but still clash; choose compatible material or give it a consistent frame/crop/grade and reading area. Do not insert a lifestyle scene merely because the image is available. Never force a dark/transparent look by blending a white-background black product into the stage. Keep its white field intentional or obtain a clean cutout.
 
-For a **single-stage** card, keep the main layout, brand/promise and action stable while directing attention through local changes: replace a photograph within its frame, cycle a coordinated product grid, draw labels towards parts, reveal a detail inset or gently move the packshot. A clean stage can contain several images, a short benefit group and a proof rail when their roles and alignment are clear. Bright color, split fields and full-bleed photography are equally valid; clean does not require a white canvas or sparse content. Let one region develop at a time, keep text still during its reading hold, and preserve useful separation between groups. See the single-stage families in [examples.md](examples.md); the object study is one option, not a universal layout.
+For a **stable stage**, keep the main layout, brand/promise and action stable while directing attention through local changes: replace a photograph within its frame, cycle a coordinated product grid, draw labels towards parts, reveal a detail inset or gently move the packshot. A clean stage can contain several images, a short benefit group and a proof rail when their roles and alignment are clear. Bright color, split fields and full-bleed photography are equally valid; clean does not require a white canvas or sparse content. Let one region develop at a time, keep text still during its reading hold, and preserve useful separation between groups. See the clean arrangements in [examples.md](examples.md); a stable layout is one option, not a separate output mode.
 
-For a **story** card, each shot should develop a different argument within the same visual language. Tie its visual mechanism to that argument: a world tour can reveal distinct locations, a real feature can use a focused crop/annotation, and a food promise can move from recognizable product to texture and use context. Choose [information arrangements](examples.md#turn-source-material-into-information) for the evidence rather than putting every message in the same title/image layout. A new headline over another slow image push does not by itself develop the story. Give transitions a connection, prepare entrances before the reading hold, and avoid headline collisions.
+For a **multi-scene story**, each shot should develop a different argument within the same visual language. Tie its visual mechanism to that argument: a world tour can reveal distinct locations, a real feature can use a focused crop/annotation, and a food promise can move from recognizable product to texture and use context. Choose [information arrangements](examples.md#turn-source-material-into-information) for the evidence rather than putting every message in the same title/image layout. A new headline over another slow image push does not by itself develop the story. Give transitions a connection, prepare entrances before the reading hold, and avoid headline collisions.
 
 Pick a product-specific organizing idea: oversized silhouette, tactile detail study, crisp UI tour, immersive scene, specimen grid, or editorial split. Change scale, crop, alignment, depth, negative space, and image/text relationship when the beat needs it. Maintain enough continuity that scene changes feel like one campaign.
 
 Use a consistent grid and spacing rhythm, with intentional margins and alignment. Leave a stable readable region for scene copy; reserve product labels near the details they describe. A label must not cover the detail or chase a rapidly moving object. Keep faces, silhouettes, UI and key artwork clear of the CTA and controls.
 
-For a card, design at the rendered aspect ratio and judge it at about **360px displayed width**. A 720px render makes a 36px label appear around 18px at that size. Inspect actual rendered text, not just source font values. Reduce words or alter composition before shrinking text. Test long names, translated copy and wrapped labels.
+For a fixed-canvas animation, design at the authored aspect ratio and judge it at about **360px displayed width**. A 720px render makes a 36px label appear around 18px at that size. Inspect actual rendered text, not just source font values. Reduce words or alter composition before shrinking text. Test long names, translated copy and wrapped labels.
 
-In a landing page, use responsive type and comfortable reading measures. Typical body text is 16–18px, supporting labels around 13–14px, and useful legal copy around 11–12px. Preserve reading order and CTA clarity on mobile; remove accidental horizontal scrolling and overlaps.
+In surrounding HTML, use responsive type and comfortable reading measures. Typical body text is 16–18px, supporting labels around 13–14px, and useful legal copy around 11–12px. Preserve reading order and CTA clarity on mobile; remove accidental horizontal scrolling and overlaps.
 
 ## Typography and color
 
 Choose typography from the selected material, brand/genre and message; examples supply techniques, not a fixed font or weight. Use a small coherent type system with display and reading roles and appropriate glyph coverage for the output language.
 
+Use supplied brand fonts with suitable embedding rights, or search [Google Fonts](https://fonts.google.com/) and [Fontsource](https://fontsource.org/) by the material's visual qualities, language coverage and available weights. A site's typography is a visual reference, not permission to redistribute its font files. Reuse the research worker/session for a small lookup when existing faces do not fit; stop with a credible shortlist rather than browsing a whole catalog. One family can serve both roles; two are useful when their jobs differ.
+
 1. Compare 2–3 plausible type treatments inside an early complete composition using actual imagery, headline, supporting label and CTA. Combine this with the opener/information-rich beat check rather than building a separate font project. Vary family, available weight and intentional line breaks; type contrast should reinforce this material and message.
-2. Inspect rendered previews at the target display size (about 360px wide for cards). Judge product prominence, crop, palette relationships and reading hierarchy together with stroke weight, line balance, line-height, spacing and the actual fonts/weights rendered. A readable font choice cannot rescue a weak image/text arrangement. Recompose or shorten copy before shrinking text.
-3. Record the chosen type roles and a short rationale in the existing brief, then apply them coherently across scenes. Recheck dense reading holds and transition frames for clipping, collisions and legibility.
+2. Inspect rendered previews at the target display size (about 360px wide for a compact placement). Judge product prominence, crop, palette relationships and reading hierarchy together with stroke weight, line balance, line-height, spacing and the actual fonts/weights rendered. A readable font choice cannot rescue a weak image/text arrangement. Recompose or shorten copy before shrinking text.
+3. Record the chosen type roles, rationale, source/version and license alongside other assets in the existing brief. Keep only selected faces in the delivery and apply them coherently across scenes through the [font roles](player-h5.md#fonts). Recheck dense reading holds and transition frames for clipping, collisions and legibility within the existing checkpoint.
 
 Animate typography to establish emphasis, then let it read. Short word/line reveals can suit a bold ad; a calm statement may only need a cut or dissolve. Avoid a long typewriter entrance for a paragraph, constantly shifting baselines, and transitions that leave overlapping headlines on screen.
 
@@ -72,33 +73,33 @@ Real imagery is the anchor. Open candidates first: a marketplace infographic may
 
 Choose motion character for the source: tactile scale/rotation for an object, restrained camera drift for landscape, precise cuts/masks for app details, warm dissolves for a cozy game, sharp poster rhythm for arcade art. Decoration should express material, use or genre. Airflow arcs can suggest a fan's category but cannot prove measured airflow.
 
-Default to silent playback and no flashing. There is no bundled audio or caption pipeline. Under `prefers-reduced-motion`, stop nonessential CSS motion and show the video's poster; handle initial load and later preference/source changes. Playback controls stay hidden by default; if requested, give them accessible names and keyboard behavior.
+Default to silent playback and no flashing. There is no bundled audio or caption pipeline. Under `prefers-reduced-motion`, stop nonessential CSS motion and hold a useful opening state; handle initial load and later preference changes. Playback controls stay hidden by default; if requested, give them accessible names and keyboard behavior.
 
 ## CTA, interaction and accessibility
 
-The video draws the CTA; the card HTML supplies the real link. Follow the shared [CTA artwork and link geometry](hero-video.md#cta-artwork-and-real-link), updating both when customizing them, including after responsive scaling. Give the transparent anchor an accurate accessible name and visible focus treatment. Keep the persistent action available on the poster and clear of playback controls.
+Use real semantic links and buttons inside the composition or surrounding HTML. Their visible artwork and interaction bounds belong to the same element; a transparent video-overlay link is unnecessary. Keep the action usable during loading and reduced motion, with an accurate accessible name and visible keyboard focus. Avoid masking or clipping its focus ring.
 
 Use semantic links for navigation and buttons for state changes. Aim for a CTA at least 48px high at the intended display size and other controls about 44×44px with separation. Verify selected states, keyboard support, accessible names and useful alt text. Never use `innerHTML` for user-provided copy.
 
-A landing page may add a useful gallery, real variant selector, feature tabs, or genuine comparison. A card usually needs only its CTA. Do not add interactions merely to satisfy a count. A screenshot is not a playable game; a decorative control that changes nothing weakens trust.
+Add a gallery, real variant selector, feature tabs or genuine comparison only when it helps the viewer. A compact experience may need only its action. Do not add interactions merely to satisfy a count. A screenshot is not a playable game; a decorative control that changes nothing weakens trust.
 
 Use the actual destination and preserve intentional query parameters. A missing destination calls for clarification, not `href="#"`. Keep secondary controls quieter than the action; avoid fake close buttons, reward wheels and invented urgency.
 
 ## Self-critique before delivery
 
-Inspect the final encoded video without supporting HTML copy during the packaged-page review, and answer with evidence:
+Inspect the final Player H5 during the browser pass, and answer with evidence:
 
 1. With supporting HTML copy hidden, does the opening establish a recognizable subject and a compelling reason to keep watching, followed by a clear next action?
 2. Can you name the new fact, experience or use case each beat communicates? Is it visible in the imagery or information groups, with enough reading time? Merge repetitive beats instead of stretching the duration.
 3. Do product prominence, typography, palette relationships and motion reflect this brand or world? Identify any generic image-swap sequence or decoration that contributes no meaning.
-4. Are the CTA artwork and real hit region aligned, readable and usable across agreed sizes?
-5. Does the wrapper or landing page support the chosen mode, with working keyboard focus, reduced-motion handling and any chosen interactions?
-6. Are claims, poster, video and destination consistent with the source and brief?
+4. Are visible action elements readable, usable and keyboard accessible across agreed sizes?
+5. Does the whole H5 have coherent responsive reading flow, reduced-motion handling and working authored interactions?
+6. Are claims, images, animation and destination consistent with the sourced facts recorded in the brief?
 
-Resolve the strongest creative weakness in early stills, batch related corrections, then render. After correctness/media/browser checks, confirm the final encoded video retains that design; inspect affected states after a fix. Report a readable but weak draft as needing improvement rather than approving it solely for having no collisions. A palette that is individually attractive can still be incoherent across a sequence; compare all holds together. Use the [staged QA workflow](hero-video.md#render-and-inspect) to reuse unchanged evidence.
+Resolve the strongest creative weakness in early frame previews, then refresh the final H5. In the final normal-speed pass, fix blocking loading, action, legibility, continuity and factual defects; record optional polish instead of restarting design. A readable but generic draft is not creative success merely because nothing overlaps. Compare all holds for palette and information continuity. Reuse unchanged evidence with the [staged H5 workflow](player-h5.md#browser-acceptance).
 
 ## Clean presentation and deliberate spacing
 
-Keep progress indicators, scene counters, and playback buttons hidden by default; show them only when requested. Honor reduced-motion preferences even with a clean wrapper. Inspect actual text bounds at reading holds and sample intermediate animation frames. Separate eyebrow, headline, underline, body, imagery, annotations and CTA into clear groups; leave breathing room between groups rather than merely preventing overlap. Shorten copy or recompose the shot when it does not fit comfortably.
+Keep progress indicators, scene counters, and playback buttons hidden by default; show them only when requested. Honor reduced-motion preferences even with hidden transport controls. Inspect actual text bounds at reading holds and sample intermediate animation frames. Separate eyebrow, headline, underline, body, imagery, annotations and CTA into clear groups; leave breathing room between groups rather than merely preventing overlap. Shorten copy or recompose the shot when it does not fit comfortably.
 
 Match motion density to the product. A restrained object ad may use a few precise moves; a bright food or playful product can support staggered object entrances, ingredient layers, tracked labels, masked reveals, and coordinated scene transitions. Build richer motion in the Remotion composition, preserve reading holds, and avoid applying the same float-and-slide pattern to every product.

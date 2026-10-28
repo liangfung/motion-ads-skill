@@ -1,0 +1,13 @@
+/* Choose type in :root via --font-display, --font-text, --display-weight and --display-tracking.
+   Leave roles unset to retain each composition's study defaults. */
+* { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; background: #11161b; color: #f5f1e7; font: 16px/1.6 var(--font-text, system-ui, sans-serif); }
+    #app { min-height: 100svh; display: grid; place-items: center; }
+    #motion-stage { position: relative; max-width: 100%; isolation: isolate; overflow: hidden; }
+    #motion-stage a:focus-visible { outline: 4px solid #fff; outline-offset: -7px; box-shadow: inset 0 0 0 8px #111; }
+    #details { max-width: 680px; margin: auto; padding: 64px 24px; }
+    #details h1 { font-family: var(--font-display, var(--font-text, system-ui, sans-serif)); font-weight: var(--display-weight, bold); letter-spacing: var(--display-tracking, normal); font-size: clamp(24px, 4vw, 36px); line-height: 1.2; }
+    .motion-fallback { position: absolute; inset: 0; display: grid; align-content: center; gap: 20px; padding: 9%; background: #11161b; color: #f5f1e7; }
+    .motion-fallback a { color: inherit; }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }

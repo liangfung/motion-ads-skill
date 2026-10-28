@@ -1,0 +1,63 @@
+// Edit these inputs from the source brief. Paths are relative to index.html.
+window.motionAd = {
+  "title": "A study in color and form",
+  "description": "An original, unbranded vector study of layered entrances, detail labels, grouped information and coordinated color transitions. Illustrative artwork, not a real product advertisement.",
+  "brand": "COLOR AND FORM",
+  "ctaLabel": "Explore the study",
+  "ctaHref": "#details",
+  "width": 720,
+  "height": 1280,
+  "fps": 30,
+  "durationSeconds": 14,
+  "bg": "#f3c84b",
+  "surface": "#fff6dc",
+  "accent": "#bc5035",
+  "text": "#25362e",
+  "qaFrames": [
+    0,
+    45,
+    102,
+    150,
+    213,
+    265,
+    330,
+    395,
+    419
+  ],
+  "scenes": [
+    {
+      "eyebrow": "AN EVERYDAY OBJECT, REFRAMED",
+      "headline": "Make room\nfor color.",
+      "labels": [
+        "FORM",
+        "DETAIL",
+        "CONTEXT"
+      ]
+    },
+    {
+      "eyebrow": "LOOK A LITTLE CLOSER",
+      "headline": "Small details.\nClear character.",
+      "details": [
+        {
+          "heading": "The form",
+          "body": "A silhouette that leads the eye."
+        },
+        {
+          "heading": "The detail",
+          "body": "Texture with room to breathe."
+        }
+      ]
+    },
+    {
+      "eyebrow": "ONE VISUAL LANGUAGE",
+      "headline": "Different views.\nOne story.",
+      "body": "A coordinated collection, with each view given its own place."
+    },
+    {
+      "eyebrow": "BRING IT ALL TOGETHER",
+      "headline": "A clear idea.\nA next step.",
+      "body": "Color, type and motion working together."
+    }
+  ],
+  "assets": []
+};

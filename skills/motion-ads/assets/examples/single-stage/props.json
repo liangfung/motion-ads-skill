@@ -1,8 +1,0 @@
-{
-  "presentation": "ad", "image": "product.svg", "imageMode": "cutout", "motif": "none",
-  "brand": "FORM / 01", "ctaLabel": "View the motion guide",
-  "bg": "#f3f0e8", "surface": "#f3f0e8", "accent": "#b94c2e", "text": "#202521", "ctaText": "#f3f0e8",
-  "width": 720, "height": 1280, "durationSeconds": 12,
-  "scenes": [],
-  "qaFrames": [0, 45, 65, 74, 110, 150, 163, 180, 210, 255, 270, 300, 326, 342, 344, 350, 358, 359]
-}
