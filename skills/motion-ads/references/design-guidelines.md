@@ -4,7 +4,7 @@ The advertisement should work as moving communication, not just attractive HTML 
 
 ## One deliberate H5 experience
 
-Build a coherent motion-led page with Remotion Player and local runtime assets. Choose its canvas, surrounding HTML and interaction from the placement, subject and information; no mandatory card/landing split is needed. The composition must communicate a useful idea, while normal HTML can supply natural reading flow and responsive supporting sections.
+Build a coherent motion-led page with Remotion Player and local runtime assets. Choose its canvas, surrounding HTML and interaction from the placement, subject and information; no mandatory card/landing split is needed. The composition must communicate a useful idea, while normal HTML can supply natural reading flow and responsive supporting sections. For an ad card, the Player alone is the delivery; add visible sections only when the brief or placement calls for a page.
 
 Deliver editable HTML/JS/CSS, the supplied runtime and selected local assets. Set language, meaningful title/description and viewport metadata. Use system or supplied/licensed local fonts, and avoid runtime CDN/font/image/tracker requests. CTA navigation is expected. Viewer-side building is unnecessary. Respect safe areas and supplied dimensions; a generic H5 is not platform certification.
 

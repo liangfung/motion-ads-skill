@@ -8,7 +8,7 @@ bash <skill-root>/scripts/project.sh init <another-out> --example atmospheric
 bash <skill-root>/scripts/project.sh init <single-stage-out> --example single-stage
 ```
 
-Initialization only copies the ready runtime and editable files; follow [the authoring and review workflow](player-h5.md). Each has a working in-page action leading to the HTML study description. Real outputs use the actual subject, supporting assets, copy and intended destination.
+Initialization only copies the ready runtime and editable files; follow [the authoring and review workflow](player-h5.md). Each uses an in-page `#details` action as a stand-in destination. Real outputs use the actual subject, supporting assets, copy and intended destination.
 
 ## Learn mechanisms, not a fixed look
 

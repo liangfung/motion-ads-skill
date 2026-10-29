@@ -43,11 +43,11 @@ Plain JS still supports arbitrary components, hooks, SVG, styles, information gr
 
 Do not put JSX, TypeScript annotations or npm imports into delivery scripts. New libraries are not automatically available in the runtime. Prefer provided APIs; a genuinely required new dependency needs a deliberate compatible runtime update, not a second CDN copy or a silent fallback to another engine. Maintain source frame/fps values for deterministic motion; uncontrolled timers/CSS animation should not make frozen-frame review unpredictable.
 
-Keep script order `runtime.js` → `config.js` → `ad.js` with `defer`. Metadata and the template's `page-title`/`page-description` nodes are populated from the config when mounted; customize supporting HTML for the brief. The starter has a portrait stage and small supporting section. Fixed-canvas artwork scales, not reflows: recompose for a different aspect ratio and keep natural reading content in ordinary HTML.
+Keep script order `runtime.js` → `config.js` → `ad.js` with `defer`. Metadata and the template's `page-title`/`page-description` nodes are populated from the config when mounted; customize supporting HTML for the brief. The starter has a portrait stage and a visually hidden heading/description; an ad card needs no visible section below the Player. Make supporting HTML visible only when the brief asks for a page or the content genuinely needs natural reading flow, and then design it with the composition rather than as a fact list repeating the animation. Fixed-canvas artwork scales, not reflows: recompose for a different aspect ratio and keep natural reading content in ordinary HTML.
 
 The studies use `bg`, `surface`, `accent` and `text` for base theme roles; artwork lighting and secondary tones remain authored choices. Optional `qaFrames` lists useful inspection frames for the reviewer, opened with `?frame=N`. It does not affect playback or require a capture for every entry; update or remove stale hints when timing changes.
 
-Keep a stable page heading and concise semantic description in supporting HTML. Hide redundant animated copy/artwork at its visual layer with `aria-hidden`, while keeping actual links/buttons outside that hidden subtree. Do not hide the whole interactive Player.
+Keep a stable page heading and concise semantic description in HTML; the starter's `visually-hidden` section serves assistive technology without adding visible copy. Hide redundant animated copy/artwork at its visual layer with `aria-hidden`, while keeping actual links/buttons outside that hidden subtree. Do not hide the whole interactive Player.
 
 ## Assets, loading and behavior
 
